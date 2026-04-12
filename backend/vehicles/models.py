@@ -23,7 +23,7 @@ class Vehicle(models.Model):
         help_text="Unique identifier for the vehicle"
     )
     
-    # brand: Manufacturer, Required
+    # brand: Manufacturer, Required (Equivalent to 'marca')
     brand = models.CharField(max_length=100)
     
     # model: Specific line or model, Required
