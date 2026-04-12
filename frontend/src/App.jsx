@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { MainPage } from './pages/MainPage';
 import { VehiclesPage } from './pages/VehiclesPage';
 import { VehiclesFormPage } from './pages/VehiclesFormPage';
-// import './index.css';
 import { Navigation } from './components/Navigation';
 
 function App() {
