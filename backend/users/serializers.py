@@ -17,6 +17,9 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 from .models import Usuario
 
 class RegistroSerializer(serializers.ModelSerializer):
+    
+    rol = serializers.ChoiceField(choices=Usuario.EnumRol.choices)
+    
     class Meta:
         model = Usuario
         fields = ['email', 'nombre', 'rol', 'password']
