@@ -12,6 +12,7 @@ function App() {
         <Route path="/" element={<MainPage />} />
         <Route path="/vehicles" element={<VehiclesPage />} />
         <Route path="/vehicles-create" element={<VehiclesFormPage />} />
+        <Route path="/vehicles/:placa" element={<VehiclesFormPage />} />
       </Routes>
     </BrowserRouter>
   );
