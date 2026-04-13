@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import api from '../api/users.api';
+import api, { createUsuario } from '../api/users.api';
 
 const CrearUsuario = () => {
   const [formData, setFormData] = useState({
@@ -12,7 +12,7 @@ const CrearUsuario = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post('crear/', formData);
+      await createUsuario(formData);
       alert('Usuario creado con éxito');
     } catch (error) {
       alert('Error al crear usuario: ' + error.response?.data?.detail);

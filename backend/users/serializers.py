@@ -1,5 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
+from .models import Usuario
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -14,15 +15,13 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
     
 
-from .models import Usuario
-
 class RegistroSerializer(serializers.ModelSerializer):
     
     rol = serializers.ChoiceField(choices=Usuario.EnumRol.choices)
     
     class Meta:
         model = Usuario
-        fields = ['email', 'nombre', 'rol', 'password']
+        fields = ['id', 'email', 'nombre', 'rol', 'password']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):

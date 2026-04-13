@@ -15,7 +15,6 @@ class UsuarioManager(BaseUserManager):
     def create_superuser(self, email, nombre, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-
         extra_fields.pop('rol', None)
 
         # El superusuario de Django actuará lógicamente como el Gerente principal

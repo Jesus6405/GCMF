@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard';
 import CrearUsuario from './pages/CreateUser';
 import Unauthorized from './pages/Unauthorized';
 import ProtectedRoute from './components/ProtectedRoute';
+import UsuariosLista from './pages/UsuariosLista';
 
 function App() {
   return (
@@ -18,9 +19,12 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
 
-        {/* Rutas exclusivas para GERENTE o ADMINISTRADOR (RF-09) */}
-        <Route element={<ProtectedRoute allowedRoles={['GERENTE_FLOTA', 'ADMINISTRADOR_OPERATIVO']} />}>
-          <Route path="/usuarios/crear" element={<CrearUsuario />} />
+        <Route element={<ProtectedRoute allowedRoles={['GERENTE_FLOTA', 'ADMINISTRADOR_OPERATIVO']}/>}>
+          <Route path="/usuarios" element={<UsuariosLista />} />
+        </Route>
+
+        <Route element={<ProtectedRoute allowedRoles={['GERENTE_FLOTA', 'ADMINISTRADOR_OPERATIVO']}/>}>
+          <Route path="/crear_usuario" element={<CrearUsuario />} />
         </Route>
 
         {/* Redirección por defecto */}
