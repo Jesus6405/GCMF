@@ -8,9 +8,9 @@ export function VehiclesFormPage() {
         brand: "",
         model: "",
         year: "",
-        fuel_type: "",
-        current_km: 0,
-        operational_status: "Disponible"
+        fuel_type: "Gasoline", // Valor inicial corregido
+        current_km: "",
+        operational_status: "Operational" // Valor inicial corregido
     });
     
     const navigate = useNavigate();
@@ -19,25 +19,42 @@ export function VehiclesFormPage() {
     useEffect(() => {
         async function loadVehicle() {
             if (params.placa) {
-                const res = await getVehicle(params.placa);
-                setVehicle(res.data);
+                try {
+                    const res = await getVehicle(params.placa);
+                    setVehicle(res.data);
+                } catch (error) {
+                    console.error("Error al cargar el vehículo:", error);
+                }
             }
         }
         loadVehicle();
     }, [params.placa]);
 
     const handleChange = (e) => {
-        setVehicle({ ...vehicle, [e.target.name]: e.target.value });
+        const { name, value, type } = e.target;
+        const parsedValue = type === "number" ? (value === "" ? "" : Number(value)) : value;
+        setVehicle({ ...vehicle, [name]: parsedValue });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (params.placa) {
-            await updateVehicle(params.placa, vehicle);
-        } else {
-            await createVehicle(vehicle);
+        try {
+            if (params.placa) {
+                await updateVehicle(params.placa, vehicle);
+            } else {
+                await createVehicle(vehicle);
+            }
+            navigate("/vehicles");
+        } catch (error) {
+            console.error("Error de la API:", error.response?.data || error.message);
+            let mensajeError = "No se pudo guardar el vehículo.\n";
+            if (error.response?.data) {
+                for (const key in error.response.data) {
+                    mensajeError += `\n- ${key}: ${error.response.data[key]}`;
+                }
+            }
+            alert(mensajeError);
         }
-        navigate("/vehicles");
     };
 
     return (
@@ -48,22 +65,17 @@ export function VehiclesFormPage() {
                     <h1>Registro de Vehículo</h1>
                     <p>La placa es la llave primaria única del sistema.</p>
                 </div>
-                <div className="header-actions">
-                    <button className="btn btn-secondary">Registrar Km</button>
-                    <button className="btn btn-danger-outline">Reportar Falla</button>
-                </div>
             </header>
 
             <form onSubmit={handleSubmit} className="elaborated-form">
                 <div className="form-main-content">
-                    {/* SECCIÓN 1: IDENTIFICACIÓN */}
                     <section className="form-section-card">
                         <div className="section-title">
                             <span className="icon">#</span>
                             <h3>Datos de Identificación</h3>
                         </div>
-                        <div className="grid-form-fields">
-                            <div className="form-group full-width">
+                        <div className="grid-form-fields dual-column">
+                            <div className="form-group">
                                 <label>Número de Placa <span className="required">*</span></label>
                                 <input 
                                     type="text" name="placa" 
@@ -73,22 +85,31 @@ export function VehiclesFormPage() {
                                 />
                                 <small>Formato: 3 letras + guión + 3 números</small>
                             </div>
+                            
+                            <div className="form-group">
+                                <label>Estado Operativo <span className="required">*</span></label>
+                                <select name="operational_status" value={vehicle.operational_status} onChange={handleChange} required>
+                                    {/* El valor del 'value' debe coincidir con el primer elemento de la tupla en Django */}
+                                    <option value="Operational">Operativo</option>
+                                    <option value="In Workshop">En Taller</option>
+                                    <option value="Under Review">Bajo Revisión</option>
+                                    <option value="Unfit">No Apto</option>
+                                </select>
+                            </div>
                         </div>
                     </section>
 
-                    {/* SECCIÓN 2: DATOS TÉCNICOS */}
                     <section className="form-section-card">
                         <div className="section-title">
                             <span className="icon">⚙️</span>
                             <h3>Datos Técnicos del Vehículo</h3>
                         </div>
                         <div className="grid-form-fields dual-column">
-                            {/* CAMBIO AQUÍ: Marca ahora es un input de texto */}
                             <div className="form-group">
                                 <label>Marca <span className="required">*</span></label>
                                 <input 
                                     type="text" name="brand" 
-                                    placeholder="Ej: Toyota, Ford, Chevrolet..." 
+                                    placeholder="Ej: Toyota, Ford..." 
                                     value={vehicle.brand} onChange={handleChange} required 
                                 />
                             </div>
@@ -110,13 +131,12 @@ export function VehiclesFormPage() {
                             <div className="form-group">
                                 <label>Tipo de Combustible <span className="required">*</span></label>
                                 <select name="fuel_type" value={vehicle.fuel_type} onChange={handleChange} required>
-                                    <option value="">— Seleccionar —</option>
-                                    <option value="Gasolina">Gasolina</option>
-                                    <option value="Diesel">Diesel</option>
+                                    <option value="Gasoline">Gasolina</option>
+                                    <option value="Diesel">Diésel</option>
                                     <option value="Gas">Gas</option>
                                 </select>
                             </div>
-                            <div className="form-group">
+                            <div className="form-group full-width">
                                 <label>Kilometraje Inicial <span className="required">*</span></label>
                                 <input 
                                     type="number" name="current_km" 
@@ -133,7 +153,6 @@ export function VehiclesFormPage() {
                     </div>
                 </div>
 
-                {/* BARRA LATERAL DEL FORMULARIO */}
                 <aside className="form-sidebar-content">
                     <div className="side-card photo-placeholder">
                         <div className="section-title">
@@ -144,8 +163,6 @@ export function VehiclesFormPage() {
                             <p>Subida de imágenes no disponible en esta fase.</p>
                         </div>
                     </div>
-                    
-                    {/* El apartado de Documentación Legal ha sido removido temporalmente */}
                 </aside>
             </form>
         </div>
