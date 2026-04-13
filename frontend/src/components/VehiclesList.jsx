@@ -17,31 +17,42 @@ export function VehiclesList() {
         const accepted = window.confirm("¿Estás seguro de eliminar este vehículo?");
         if (accepted) {
             await deleteVehicle(placa);
-            // Filtramos el estado para quitar el vehículo eliminado visualmente
             setVehicles(vehicles.filter(v => v.placa !== placa));
         }
     };
 
     return (
-        <div>
-            <h2>Lista de Vehículos</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Placa</th><th>Marca</th><th>Modelo</th><th>Año</th>
-                        <th>Combustible</th><th>Estado</th><th>KM Actual</th><th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {vehicles.map((vehicle) => (
-                        <VehicleCard 
-                            key={vehicle.placa} 
-                            vehicle={vehicle} 
-                            onDelete={handleDelete} 
-                        />
-                    ))}
-                </tbody>
-            </table>
+        <div className="page-container">
+            <div className="page-header">
+                <h2>Inventario de Unidades</h2>
+                <p>Lista de vehículos registrados en el sistema.</p>
+            </div>
+            
+            <div className="table-container">
+                <table className="data-table">
+                    <thead>
+                        <tr>
+                            <th>Placa</th>
+                            <th>Marca</th>
+                            <th>Modelo</th>
+                            <th>Año</th>
+                            <th>Combustible</th>
+                            <th>Estado</th>
+                            <th>KM Actual</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {vehicles.map((vehicle) => (
+                            <VehicleCard 
+                                key={vehicle.placa} 
+                                vehicle={vehicle} 
+                                onDelete={handleDelete} 
+                            />
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }

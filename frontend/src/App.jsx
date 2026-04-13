@@ -7,15 +7,19 @@ import { Navigation } from './components/Navigation';
 function App() {
   return (
     <BrowserRouter>
-      <Navigation />
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/vehicles" element={<VehiclesPage />} />
-        <Route path="/vehicles-create" element={<VehiclesFormPage />} />
-        <Route path="/vehicles/:placa" element={<VehiclesFormPage />} />
-      </Routes>
+      <div className="app-layout">
+        <Navigation />
+        <main className="main-content"> 
+          <Routes>
+            <Route path="/" element={<MainPage />} />
+            <Route path="/vehicles" element={<VehiclesPage />} />
+            <Route path="/vehicles-create" element={<VehiclesFormPage />} />
+            <Route path="/vehicles/:placa" element={<VehiclesFormPage />} />
+          </Routes>
+        </main> 
+      </div>
     </BrowserRouter>
   );
 }
 
-export default App
+export default App;
