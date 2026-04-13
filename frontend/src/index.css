@@ -224,3 +224,185 @@ body {
     overflow-x: auto;
   }
 }
+
+/* Contenedor del Formulario */
+.form-page-container {
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.breadcrumb {
+    font-size: 0.75rem;
+    color: var(--primary-blue);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Layout del Formulario */
+.elaborated-form {
+    display: grid;
+    grid-template-columns: 1fr 350px; /* Columna principal y lateral */
+    gap: 30px;
+}
+
+.form-section-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.section-title .icon {
+    color: var(--primary-blue);
+    font-weight: bold;
+}
+
+.section-title h3 {
+    font-size: 1.1rem;
+    color: #1E293B;
+}
+
+/* Inputs Estilizados */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.required {
+    color: var(--danger-red);
+}
+
+.form-group input, 
+.form-group select {
+    padding: 12px 16px;
+    border: 1px solid #CBD5E1;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    background-color: #F8FAFC;
+}
+
+.form-group input:focus, 
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    background-color: var(--white);
+}
+
+.form-group small {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Grid interna de campos */
+.grid-form-fields {
+    display: grid;
+    gap: 20px;
+}
+
+.grid-form-fields.dual-column {
+    grid-template-columns: 1fr 1fr;
+}
+
+/* Sidebar del Formulario */
+.side-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.upload-box {
+    border: 2px dashed #CBD5E1;
+    border-radius: 8px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding: 20px;
+}
+
+.doc-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.doc-list li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    padding: 8px 0;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.doc-list .status {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* Botones de acción */
+.btn-save {
+    background-color: var(--primary-blue);
+    color: var(--white);
+    padding: 14px 28px;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.btn-danger-outline {
+    background: transparent;
+    border: 1px solid var(--danger-red);
+    color: var(--danger-red);
+}
+
+.btn-secondary {
+    background: #F1F5F9;
+    color: #475569;
+}
+
+/* Ajustes Responsivos */
+@media (max-width: 1024px) {
+    .elaborated-form {
+        grid-template-columns: 1fr;
+    }
+}
