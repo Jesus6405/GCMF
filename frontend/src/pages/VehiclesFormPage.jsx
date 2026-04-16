@@ -2,15 +2,26 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getVehicle, createVehicle, updateVehicle } from "../api/vehicles.api";
 
+
+const INITIAL_STATE = {
+    placa: "",
+    brand: "",
+    model: "",
+    year: "",
+    fuel_type: "Gasoline",
+    current_km: "",
+    operational_status: "Operational"
+};
+
 export function VehiclesFormPage() {
     const [vehicle, setVehicle] = useState({
         placa: "",
         brand: "",
         model: "",
         year: "",
-        fuel_type: "Gasoline", // Valor inicial corregido
+        fuel_type: "Gasoline", 
         current_km: "",
-        operational_status: "Operational" // Valor inicial corregido
+        operational_status: "Operational" 
     });
     
     const navigate = useNavigate();
@@ -25,6 +36,10 @@ export function VehiclesFormPage() {
                 } catch (error) {
                     console.error("Error al cargar el vehículo:", error);
                 }
+            }
+            else
+            {
+                setVehicle(INITIAL_STATE);//Si la url no lleva un vehiculo limpia el formulario
             }
         }
         loadVehicle();
@@ -83,7 +98,6 @@ export function VehiclesFormPage() {
                                     value={vehicle.placa} onChange={handleChange} 
                                     required disabled={params.placa}
                                 />
-                                <small>Formato: 3 letras + guión + 3 números</small>
                             </div>
                             
                             <div className="form-group">
