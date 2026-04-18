@@ -21,7 +21,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
     # Esto le dice a Django que el email es el campo principal para el login
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['nombre', 'rol']
+    REQUIRED_FIELDS = ['nombre']
 
     def __str__(self):
         return f"{self.email} - {self.get_rol_display()}"

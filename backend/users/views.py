@@ -26,6 +26,11 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         # Evitamos que un Admin edite a un Gerente
         usuario_a_editar = self.get_object()
+        target_rol = request.data.get('rol')
+
+        if request.user.rol == 'ADMINISTRADOR_OPERATIVO' and target_rol == 'GERENTE_FLOTA':
+            return Response({"detail": "No puedes ascender a nadie (o a ti mismo) a Gerente."}, status=403)
         if request.user.rol == 'ADMINISTRADOR_OPERATIVO' and usuario_a_editar.rol == 'GERENTE_FLOTA':
             return Response({"detail": "No puedes editar a un Gerente."}, status=403)
+        
         return super().update(request, *args, **kwargs)

@@ -29,7 +29,7 @@ const CrearUsuario = () => {
         <input type="text" placeholder="Nombre Completo" 
           onChange={e => setFormData({...formData, nombre: e.target.value})} required />
         
-        <select onChange={e => setFormData({...formData, rol: e.target.value})}>
+        <select value={formData.rol} onChange={e => setFormData({...formData, rol: e.target.value})}>
           <option value="GERENTE_FLOTA">Gerente de Flota</option>
           <option value="ADMINISTRADOR_OPERATIVO">Administrador Operativo</option>
           <option value="CONDUCTOR">Conductor</option>
