@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { getUsuarios, deleteUsuario } from '../api/users.api';
 import AuthContext from '../context/AuthContext';
+import { Link, useNavigate } from 'react-router-dom';
 
 const UsuariosLista = () => {
     const [usuarios, setUsuarios] = useState([]);
@@ -55,8 +56,13 @@ const UsuariosLista = () => {
                     ))}
                 </tbody>
             </table>
+
+            <Link to="/crear_usuario" style={btnStyle}>Creacion de Usuarios</Link>
+            <Link to="/dashboard" style={{ ...btnStyle, background: 'red' }}>Salir</Link>
         </div>
     );
 };
+
+const btnStyle = { padding: '10px', border: '1px solid #ccc', textDecoration: 'none', color: 'black' };
 
 export default UsuariosLista;

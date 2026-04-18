@@ -17,10 +17,6 @@ const Dashboard = () => {
           <Link to="/usuarios" style={btnStyle}>Gestión de Personal</Link>
         )}
 
-        {['GERENTE_FLOTA', 'ADMINISTRADOR_OPERATIVO'].includes(user?.rol) && (
-          <Link to="/crear_usuario" style={btnStyle}>Creacion de Usuarios</Link>
-        )}
-
         {/* Conductores ven registro de kilometraje */}
         {user?.rol === 'CONDUCTOR' && (
           <button style={btnStyle}>Registrar Kilometraje</button>
