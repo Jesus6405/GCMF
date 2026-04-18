@@ -12,7 +12,7 @@ const Login = () => {
         e.preventDefault();
         try {
             await login(email, password);
-            navigate('/dashboard'); 
+            navigate('/'); 
         } catch (error) {
             alert("Credenciales incorrectas");
         }

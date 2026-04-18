@@ -1,5 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { MainPage } from './pages/MainPage';
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { VehiclesPage } from './pages/VehiclesPage';
 import { VehiclesFormPage } from './pages/VehiclesFormPage';
 import { OdometerLogsPage } from './pages/OdometerLogsPage';
@@ -16,42 +15,43 @@ function App() {
   return (
     <BrowserRouter>
       <div className="app-layout">
-        <Navigation />
-        <main className="main-content"> 
-          <Routes>
-            <Route path="/" element={<MainPage />} />
-            <Route path="/vehicles" element={<VehiclesPage />} />
-            <Route path="/vehicles-create" element={<VehiclesFormPage />} />
-            <Route path="/vehicles/:placa" element={<VehiclesFormPage />} />
+        <Routes>
+          {/* --- NIVEL 0: RUTAS PÚBLICAS (Sin Nav) --- */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
+
+          {/* --- NIVEL 1: RUTAS PROTEGIDAS CON NAVEGACIÓN --- */}
+          {/* Envolvemos todas las rutas que REQUIEREN estar logueado y USAN el Nav */}
+          <Route element={
+            <ProtectedRoute>
+              <Navigation /> 
+              <main className="main-content">
+                <Outlet /> 
+              </main>
+            </ProtectedRoute>
+          }>
+            {/* Dashboard para todos */}
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/" element={<Navigate to="/dashboard" />} />
+
+            {/* Rutas para Conductores */}
             <Route path="/odometerLog" element={<OdometerLogsPage />} />
             <Route path="/odometerLog-create" element={<OdometerLogsFormPage />} />
 
-            {/* Rutas Públicas */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/unauthorized" element={<Unauthorized />} />
-
-            {/* Rutas Protegidas - Cualquier usuario autenticado */}
-            <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            </Route>
-
+            {/* --- NIVEL 2: SOLO STAFF (Admin y Gerente) --- */}
             <Route element={<ProtectedRoute allowedRoles={['GERENTE_FLOTA', 'ADMINISTRADOR_OPERATIVO']}/>}>
               <Route path="/usuarios" element={<UsuariosLista />} />
-            </Route>
-
-            <Route element={<ProtectedRoute allowedRoles={['GERENTE_FLOTA', 'ADMINISTRADOR_OPERATIVO']}/>}>
               <Route path="/crear_usuario" element={<CrearUsuario />} />
-            </Route>
-
-            <Route element={<ProtectedRoute allowedRoles={['GERENTE_FLOTA', 'ADMINISTRADOR_OPERATIVO']}/>}>
               <Route path="/editar_usuario/:id" element={<CrearUsuario />} />
+              <Route path="/vehicles" element={<VehiclesPage />} />
+              <Route path="/vehicles-create" element={<VehiclesFormPage />} />
+              <Route path="/vehicles/:placa" element={<VehiclesFormPage />} />
             </Route>
+          </Route>
 
-            {/* Redirección por defecto */}
-            <Route path="/" element={<Navigate to="/dashboard" />} />
-            <Route path="*" element={<h1>404 - Not Found</h1>} />
-          </Routes>
-        </main> 
+          {/* 404 */}
+          <Route path="*" element={<h1>404 - Not Found</h1>} />
+        </Routes>
       </div>
     </BrowserRouter>
   );

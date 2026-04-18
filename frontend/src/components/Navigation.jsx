@@ -1,6 +1,11 @@
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import AuthContext from '../context/AuthContext';
 
 export function Navigation() {
+
+    const { user } = useContext(AuthContext); // Para saber quién es el que está mirando
+
     return (
         <nav className="sidebar">
             <div className="sidebar-header">
@@ -12,18 +17,32 @@ export function Navigation() {
             </div>
             <ul className="sidebar-menu">
                 <li className="menu-section">Gestión de Activos</li>
-                <li>
-                    <Link to="/vehicles" className="menu-link">Inventario de Unidades</Link>
-                </li>
-                <li>
-                    <Link to="/vehicles-create" className="menu-link">Registrar Vehículo</Link>
-                </li>
-                <li>
-                    <Link to="/odometerLog" className="menu-link">Registros de kilometraje</Link>
-                </li>
-                <li>
-                    <Link to="/odometerLog-create" className="menu-link">Registrar Kilometraje</Link>
-                </li>
+                {/* Solo Gerentes y Admins ven estos apartados */}
+                {['GERENTE_FLOTA', 'ADMINISTRADOR_OPERATIVO'].includes(user?.rol) && (
+                    <>
+                    <li>
+                        <Link to="/usuarios" className="menu-link">Gestión de Personal</Link>
+                    </li>
+                    <li>
+                        <Link to="/vehicles" className="menu-link">Inventario de Unidades</Link>
+                    </li>
+                    <li>
+                        <Link to="/vehicles-create" className="menu-link">Registrar Vehículo</Link>
+                    </li>
+                    </>
+                )}
+
+                {/* Conductores ven registro de kilometraje */}
+                {user?.rol === 'CONDUCTOR' && (
+                    <>
+                    <li>
+                        <Link to="/odometerLog" className="menu-link">Registros de kilometraje</Link>
+                    </li>
+                    <li>
+                        <Link to="/odometerLog-create" className="menu-link">Registrar Kilometraje</Link>
+                    </li>
+                    </>
+                )}
             </ul>
         </nav>
     );

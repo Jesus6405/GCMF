@@ -60,7 +60,7 @@ const UsuariosLista = () => {
             </table>
 
             <Link to="/crear_usuario" style={btnStyle}>Creacion de Usuarios</Link>
-            <Link to="/dashboard" style={{ ...btnStyle, background: 'red' }}>Salir</Link>
+            <Link to="/" style={{ ...btnStyle, background: 'red' }}>Salir</Link>
         </div>
     );
 };
