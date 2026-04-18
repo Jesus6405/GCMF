@@ -18,6 +18,12 @@ export function Navigation() {
                 <li>
                     <Link to="/vehicles-create" className="menu-link">Registrar Vehículo</Link>
                 </li>
+                <li>
+                    <Link to="/odometerLog" className="menu-link">Registros de kilometraje</Link>
+                </li>
+                <li>
+                    <Link to="/odometerLog-create" className="menu-link">Registrar Kilometraje</Link>
+                </li>
             </ul>
         </nav>
     );

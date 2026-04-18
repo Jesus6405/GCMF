@@ -62,3 +62,37 @@ class Vehicle(models.Model):
 
     def __str__(self):
         return f"{self.placa} - {self.brand} {self.model}"
+    
+class OdometerLog(models.Model):
+    #Llave Foránea (Foreign Key) conectada a la placa del vehículo
+    vehicle = models.ForeignKey(
+        Vehicle, 
+        on_delete=models.CASCADE, 
+        related_name='odometer_logs',
+        help_text="Vehículo al que pertenece este registro"
+    )
+    
+    #El kilometraje reportado en ese momento
+    km_reading = models.FloatField(
+        help_text="Kilometraje registrado en el reporte"
+    )
+    
+    #Fecha y hora en la que se realizó el registro (se llena automáticamente)
+    recorded_at = models.DateTimeField(
+        auto_now_add=True,
+        help_text="Fecha y hora exacta del reporte"
+    )
+
+    #Descripcion del registro
+    description = models.CharField(
+        null= True,
+        blank= True,
+        max_length=300
+        )
+
+    class Meta:
+        # Ordenamos los registros por fecha de forma descendente 
+        ordering = ['-recorded_at']
+
+    def __str__(self):
+        return f"{self.vehicle.placa} - {self.km_reading} km ({self.recorded_at.strftime('%d/%m/%Y')})"

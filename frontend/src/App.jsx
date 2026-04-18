@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { MainPage } from './pages/MainPage';
 import { VehiclesPage } from './pages/VehiclesPage';
 import { VehiclesFormPage } from './pages/VehiclesFormPage';
+import { OdometerLogsPage } from './pages/OdometerLogsPage';
+import { OdometerLogsFormPage } from './pages/OdometerLogsFormPage';
 import { Navigation } from './components/Navigation';
 
 function App() {
@@ -15,6 +17,8 @@ function App() {
             <Route path="/vehicles" element={<VehiclesPage />} />
             <Route path="/vehicles-create" element={<VehiclesFormPage />} />
             <Route path="/vehicles/:placa" element={<VehiclesFormPage />} />
+            <Route path="/odometerLog" element={<OdometerLogsPage />} />
+            <Route path="/odometerLog-create" element={<OdometerLogsFormPage />} />
           </Routes>
         </main> 
       </div>
