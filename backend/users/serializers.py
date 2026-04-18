@@ -22,7 +22,7 @@ class RegistroSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = ['id', 'email', 'nombre', 'rol', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {'password': {'write_only': True, 'required': False}}
 
     def create(self, validated_data):
         # Usamos nuestro manager para que la contraseña se guarde con hash

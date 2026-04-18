@@ -27,6 +27,10 @@ function App() {
           <Route path="/crear_usuario" element={<CrearUsuario />} />
         </Route>
 
+        <Route element={<ProtectedRoute allowedRoles={['GERENTE_FLOTA', 'ADMINISTRADOR_OPERATIVO']}/>}>
+          <Route path="/editar_usuario/:id" element={<CrearUsuario />} />
+        </Route>
+
         {/* Redirección por defecto */}
         <Route path="/" element={<Navigate to="/dashboard" />} />
         <Route path="*" element={<h1>404 - Not Found</h1>} />

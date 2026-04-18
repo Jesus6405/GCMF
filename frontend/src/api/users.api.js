@@ -40,13 +40,16 @@ api.interceptors.response.use(
 // 1. Obtener todos los usuarios (GET)
 export const getUsuarios = () => api.get('gestion/');
 
-// 2. Crear un usuario (POST) - Este reemplaza lo que tenías antes
+// 2. Obtener un unico usuario (GET)
+export const getUsuario = (id) => api.get(`gestion/${id}/`);
+
+// 3. Crear un usuario (POST) - Este reemplaza lo que tenías antes
 export const createUsuario = (data) => api.post('gestion/', data);
 
-// 3. Actualizar un usuario (PUT) - Recibe el ID y los nuevos datos
+// 4. Actualizar un usuario (PUT) - Recibe el ID y los nuevos datos
 export const updateUsuario = (id, data) => api.put(`gestion/${id}/`, data);
 
-// 4. Eliminar un usuario (DELETE)
+// 5. Eliminar un usuario (DELETE)
 export const deleteUsuario = (id) => api.delete(`gestion/${id}/`);
 
 export default api;

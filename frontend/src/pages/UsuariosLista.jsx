@@ -47,10 +47,12 @@ const UsuariosLista = () => {
                             <td>{u.rol}</td>
                             <td>
                                 {/* Renderizado condicional: Solo el Gerente puede borrar */}
-                                {user.rol === 'GERENTE_FLOTA' && (
+                                {user.rol === 'GERENTE_FLOTA' && u.email !== user.email && (
                                     <button onClick={() => handleDelete(u.id)}>Eliminar</button>
                                 )}
-                                <button>Editar</button>
+                                <Link to={`/editar_usuario/${u.id}`}>
+                                    Editar
+                                </Link>
                             </td>
                         </tr>
                     ))}
