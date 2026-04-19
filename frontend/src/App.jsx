@@ -8,10 +8,10 @@ import { IncidentsFormPage } from './pages/IncidentsFormPage';
 import { Navigation } from './components/Navigation';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import CrearUsuario from './pages/CreateUser';
+import UsersFormPage from './pages/UsersFormPage';
 import Unauthorized from './pages/Unauthorized';
 import ProtectedRoute from './components/ProtectedRoute';
-import UsuariosLista from './pages/UsuariosLista';
+import { UsersPage } from './pages/UsersPage';
 
 function App() {
   return (
@@ -43,9 +43,9 @@ function App() {
 
             {/* --- NIVEL 2: SOLO STAFF (Admin y Gerente) --- */}
             <Route element={<ProtectedRoute allowedRoles={['GERENTE_FLOTA', 'ADMINISTRADOR_OPERATIVO']}/>}>
-              <Route path="/usuarios" element={<UsuariosLista />} />
-              <Route path="/crear_usuario" element={<CrearUsuario />} />
-              <Route path="/editar_usuario/:id" element={<CrearUsuario />} />
+              <Route path="/users" element={<UsersPage />} />
+              <Route path="/create-user" element={<UsersFormPage />} />
+              <Route path="/edit-user/:id" element={<UsersFormPage />} />
               <Route path="/vehicles" element={<VehiclesPage />} />
               <Route path="/vehicles-create" element={<VehiclesFormPage />} />
               <Route path="/vehicles/:placa" element={<VehiclesFormPage />} />
