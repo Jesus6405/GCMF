@@ -27,3 +27,19 @@ class RegistroSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # Usamos nuestro manager para que la contraseña se guarde con hash
         return Usuario.objects.create_user(**validated_data)
+    
+    def update(self, instance, validated_data):
+       # 1. Extraemos la contraseña si viene en los datos
+        password = validated_data.pop('password', None)
+        
+        # 2. Actualizamos el resto de los campos (nombre, email, rol)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        
+        # 3. Si se envió una contraseña nueva, la encriptamos
+        if password:
+            instance.set_password(password)
+            
+        instance.save()
+        return instance
+        
