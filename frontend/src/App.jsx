@@ -3,6 +3,8 @@ import { VehiclesPage } from './pages/VehiclesPage';
 import { VehiclesFormPage } from './pages/VehiclesFormPage';
 import { OdometerLogsPage } from './pages/OdometerLogsPage';
 import { OdometerLogsFormPage } from './pages/OdometerLogsFormPage';
+import { IncidentsPage } from './pages/IncidentsPage';
+import { IncidentsFormPage } from './pages/IncidentsFormPage';
 import { Navigation } from './components/Navigation';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -37,6 +39,7 @@ function App() {
             {/* Rutas para Conductores */}
             <Route path="/odometerLog" element={<OdometerLogsPage />} />
             <Route path="/odometerLog-create" element={<OdometerLogsFormPage />} />
+            <Route path="/odometerLog/:id" element={<OdometerLogsFormPage />} />
 
             {/* --- NIVEL 2: SOLO STAFF (Admin y Gerente) --- */}
             <Route element={<ProtectedRoute allowedRoles={['GERENTE_FLOTA', 'ADMINISTRADOR_OPERATIVO']}/>}>
@@ -46,6 +49,9 @@ function App() {
               <Route path="/vehicles" element={<VehiclesPage />} />
               <Route path="/vehicles-create" element={<VehiclesFormPage />} />
               <Route path="/vehicles/:placa" element={<VehiclesFormPage />} />
+              <Route path="/incidents" element={<IncidentsPage />} />
+              <Route path="/incidents-create" element={<IncidentsFormPage />} />
+              <Route path="/incidents/:id" element={<IncidentsFormPage />} />
             </Route>
           </Route>
 

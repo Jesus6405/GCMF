@@ -96,3 +96,54 @@ class OdometerLog(models.Model):
 
     def __str__(self):
         return f"{self.vehicle.placa} - {self.km_reading} km ({self.recorded_at.strftime('%d/%m/%Y')})"
+    
+class Incident(models.Model):
+    class UrgencyLevel(models.TextChoices):
+        LOW = 'Low', 'Leve'
+        MODERATE = 'Moderate', 'Moderada'
+        CRITICAL = 'Critical', 'Crítica'
+
+    class ReportStatus(models.TextChoices):
+        PENDING = 'Pending', 'Pendiente'
+        UNDER_REVIEW = 'Under Review', 'En Revisión'
+        RESOLVED = 'Resolved', 'Solucionado'
+
+    vehicle = models.ForeignKey(
+        Vehicle, 
+        on_delete=models.CASCADE, 
+        related_name='incidents',
+        help_text="Vehículo asociado a la falla"
+    )
+    description = models.TextField(
+        help_text="Descripción detallada de la falla o incidente"
+    )
+    urgency_level = models.CharField(
+        max_length=20,
+        choices=UrgencyLevel.choices,
+        default=UrgencyLevel.LOW
+    )
+    report_status = models.CharField(
+        max_length=20,
+        choices=ReportStatus.choices,
+        default=ReportStatus.PENDING
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        help_text="Fecha y hora de creación del reporte"
+    )
+
+    def save(self, *args, **kwargs):
+        """
+        Sobrescribimos el método save para aplicar la regla de negocio:
+        Si la incidencia es Crítica, el vehículo queda fuera de servicio.
+        """
+        if self.urgency_level == self.UrgencyLevel.CRITICAL:
+            # Accedemos al objeto vehículo relacionado
+            self.vehicle.operational_status = 'Unfit'
+            # Guardamos el cambio solo en el vehículo
+            self.vehicle.save()
+            
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Incidencia {self.id} - {self.vehicle.placa} ({self.urgency_level})"

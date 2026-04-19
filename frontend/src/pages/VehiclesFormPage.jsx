@@ -36,9 +36,7 @@ export function VehiclesFormPage() {
                 } catch (error) {
                     console.error("Error al cargar el vehículo:", error);
                 }
-            }
-            else
-            {
+            } else {
                 setVehicle(INITIAL_STATE);//Si la url no lleva un vehiculo limpia el formulario
             }
         }

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Vehicle
 from .models import OdometerLog
+from .models import Incident
 
 class VehicleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,3 +24,8 @@ class OdometerLogSerializer(serializers.ModelSerializer):
             })
         
         return data
+    
+class IncidentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Incident
+        fields = '__all__'
