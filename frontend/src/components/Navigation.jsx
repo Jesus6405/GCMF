@@ -24,23 +24,17 @@ export function Navigation() {
                         <Link to="/usuarios" className="menu-link">Gestión de Personal</Link>
                     </li>
                     <li>
-                        <Link to="/vehicles" className="menu-link">
-                        Inventario de Unidades
                         <Link to="/vehicles-create" className="menu-link">Registrar Vehículo</Link>
-                        </Link>
                     </li>
-                    {/* <li>
-                        <Link to="/vehicles-create" className="menu-link">Registrar Vehículo</Link>
-                    </li> */}
-                     <li>
-                        <Link to="/incidents" className="menu-link">
-                        Incidentes
+                    <li>
                         <Link to="/incidents-create" className="menu-link">Registrar Incidente</Link>
-                        </Link>
                     </li>
-                    {/* <li>
-                        <Link to="/incidents-create" className="menu-link">Registrar Incidente</Link>
-                    </li> */}
+                    <li>
+                        <Link to="/maintenanceOrders" className="menu-link">Órdenes de Mantenimiento</Link>
+                    </li>
+                    <li>
+                        <Link to="/maintenanceOrders-create" className="menu-link">Registrar Órden de Mantenimiento</Link>
+                    </li>
                     </>
                 )}
 

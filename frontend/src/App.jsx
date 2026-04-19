@@ -5,6 +5,8 @@ import { OdometerLogsPage } from './pages/OdometerLogsPage';
 import { OdometerLogsFormPage } from './pages/OdometerLogsFormPage';
 import { IncidentsPage } from './pages/IncidentsPage';
 import { IncidentsFormPage } from './pages/IncidentsFormPage';
+import { MaintenanceOrdersPage } from './pages/MaintenanceOrdersPage';
+import { MaintenanceOrdersFormPage } from './pages/MaintenanceOrdersFormPage';
 import { Navigation } from './components/Navigation';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -52,6 +54,9 @@ function App() {
               <Route path="/incidents" element={<IncidentsPage />} />
               <Route path="/incidents-create" element={<IncidentsFormPage />} />
               <Route path="/incidents/:id" element={<IncidentsFormPage />} />
+              <Route path="/maintenanceOrders" element={<MaintenanceOrdersPage />} />
+              <Route path="/maintenanceOrders-create" element={<MaintenanceOrdersFormPage />} />
+              <Route path="/maintenanceOrders/:id" element={<MaintenanceOrdersFormPage />} />
             </Route>
           </Route>
 
