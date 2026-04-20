@@ -58,7 +58,7 @@ function App() {
               <Route path="/maintenanceOrders-create" element={<MaintenanceOrdersFormPage />} />
               <Route path="/maintenanceOrders/:id" element={<MaintenanceOrdersFormPage />} />
             </Route>
-          </Route>
+          
         </Route>
 
         {/* 404 */}
