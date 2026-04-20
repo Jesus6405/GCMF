@@ -14,8 +14,13 @@ import UsersFormPage from './pages/UsersFormPage';
 import Unauthorized from './pages/Unauthorized';
 import ProtectedRoute from './components/ProtectedRoute';
 import { UsersPage } from './pages/UsersPage';
+import { useState } from 'react'; 
+
 
 function App() {
+  
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
     <BrowserRouter>
       <Routes>
@@ -26,8 +31,26 @@ function App() {
         {/* --- NIVEL 1: RUTAS PROTEGIDAS CON NAVEGACIÓN --- */}
         <Route element={
           <ProtectedRoute>
-            <div className="app-layout">{/*app layout para el css grid que centra el formulario*/}
-              <Navigation /> 
+            <div className="app-layout">
+              
+              {/* BOTÓN HAMBURGUESA (Solo visible en CSS móvil) */}
+              <button 
+                className="mobile-menu-btn"
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              >
+                {/* Si está abierto muestra una X, si no, las 3 rayitas */}
+                {isSidebarOpen ? '✕' : '☰'} 
+              </button>
+
+              {/* OVERLAY OSCURO (Al hacerle clic, se cierra el menú) */}
+              <div 
+                className={`sidebar-overlay ${isSidebarOpen ? 'open' : ''}`}
+                onClick={() => setIsSidebarOpen(false)}
+              ></div>
+
+              {/* Le pasamos al Navigation la instrucción de si está abierto y cómo cerrarse */}
+              <Navigation isOpen={isSidebarOpen} closeMenu={() => setIsSidebarOpen(false)} /> 
+              
               <main className="main-content">
                 <Outlet /> 
               </main>

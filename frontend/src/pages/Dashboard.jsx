@@ -14,7 +14,7 @@ const Dashboard = () => {
       <nav style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
         {/* Solo Gerentes y Admins ven gestión de usuarios */}
         {['GERENTE_FLOTA', 'ADMINISTRADOR_OPERATIVO'].includes(user?.rol) && (
-          <Link to="/usuarios" style={btnStyle}>Gestión de Personal</Link>
+          <Link to="/users" style={btnStyle}>Gestión de Personal</Link>
         )}
 
         {/* Conductores ven registro de kilometraje */}

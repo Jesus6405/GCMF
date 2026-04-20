@@ -488,28 +488,86 @@ body {
     background-color: #1D4ED8;
 }
 
-/*Responsive para dispositivos moviles*/
+/* --- AGREGAR AL FINAL DE TU CSS O CERCA DEL SIDEBAR --- */
+/* Botón de Menú Móvil (Hamburguesa) */
+.mobile-menu-btn {
+  display: none; /* Oculto en PC */
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1001; /* Por encima de todo */
+  background-color: var(--primary-blue);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Fondo oscuro cuando el menú está abierto */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 23, 42, 0.6); /* Color oscuro semitransparente */
+  z-index: 999; /* Justo debajo del sidebar */
+  backdrop-filter: blur(2px);
+}
+
+/* Modificamos la transición del sidebar original (búscalo y agrégale esto) */
+.sidebar {
+  /* ... tus estilos actuales ... */
+  transition: transform 0.3s ease-in-out; /* Animación suave */
+}
+
+/* --- DISEÑO RESPONSIVO (PANTALLAS PEQUEÑAS) --- */
 @media (max-width: 768px) {
   /* Layout general */
   .app-layout {
-    grid-template-columns: 1fr; /* Cambia a una sola columna */
-  }
-  
-  .sidebar {
-    padding: 15px;
+    grid-template-columns: 1fr; 
   }
 
+  /* Ajustes del Menú Lateral (Off-canvas) */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 260px;
+    padding: 15px;
+    transform: translateX(-100%); /* Escondido por defecto */
+    z-index: 1000;
+    overflow-y: auto; 
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .sidebar.open {
+    transform: translateX(0); /* Se muestra cuando tiene la clase open */
+  }
+
+  /* Mostramos elementos móviles */
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  .sidebar-overlay.open {
+    display: block;
+  }
+
+  /* Ajustes de contenido y formularios */
   .main-content {
-    padding: 15px; /* Reducimos el padding en móvil para ganar espacio */
+    padding: 60px 15px 15px 15px; /* Espacio para el botón hamburguesa */
   }
   
   .table-container {
     overflow-x: auto;
   }
 
-  /* --- AJUSTES NUEVOS PARA LOS FORMULARIOS EN MÓVIL --- */
-  
-  /* 1. Apilamos el encabezado y los botones */
   .form-header {
     flex-direction: column;
     gap: 15px;
@@ -520,12 +578,10 @@ body {
     justify-content: flex-start;
   }
 
-  /* 2. Colapsamos las dos columnas del formulario a una sola */
   .grid-form-fields.dual-column {
     grid-template-columns: 1fr;
   }
 
-  /* 3. Aseguramos que los botones de guardar ocupen todo el ancho */
   .form-submit-zone .btn-save {
     width: 100%;
   }

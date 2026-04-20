@@ -2,14 +2,20 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import AuthContext from '../context/AuthContext';
 
-export function Navigation() {
+export function Navigation({ isOpen, closeMenu }) {
 
     const { user } = useContext(AuthContext); // Para saber quién es el que está mirando
 
     return (
-        <nav className="sidebar">
+        
+        <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
+            
             <div className="sidebar-header">
-                <div className="logo-icon">C</div>
+                <div className="logo-icon">
+                    <Link to="/dashboard">
+                        O
+                    </Link>
+                </div>
                 <div className="logo-text">
                     <h1>GCMF</h1>
                     <p>Gestión de Flotas</p>
@@ -21,22 +27,22 @@ export function Navigation() {
                 {['GERENTE_FLOTA', 'ADMINISTRADOR_OPERATIVO'].includes(user?.rol) && (
                     <>
                     <li>
-                        <Link to="/users" className="menu-link">Gestión de Personal</Link>
+                        <Link to="/users" className="menu-link" onClick={closeMenu}>Gestión de Personal</Link>
                     </li>
                     <li>
-                        <Link to="/create-user" className="menu-link">Registrar Usuario</Link>
+                        <Link to="/create-user" className="menu-link" onClick={closeMenu}>Registrar Usuario</Link>
                     </li>
                     <li>
-                        <Link to="/vehicles-create" className="menu-link">Registrar Vehículo</Link>
+                        <Link to="/vehicles-create" className="menu-link" onClick={closeMenu}>Registrar Vehículo</Link>
                     </li>
                     <li>
-                        <Link to="/incidents-create" className="menu-link">Registrar Incidente</Link>
+                        <Link to="/incidents-create" className="menu-link" onClick={closeMenu}>Registrar Incidente</Link>
                     </li>
                     <li>
-                        <Link to="/maintenanceOrders" className="menu-link">Órdenes de Mantenimiento</Link>
+                        <Link to="/maintenanceOrders" className="menu-link" onClick={closeMenu}>Órdenes de Mantenimiento</Link>
                     </li>
                     <li>
-                        <Link to="/maintenanceOrders-create" className="menu-link">Registrar Órden de Mantenimiento</Link>
+                        <Link to="/maintenanceOrders-create" className="menu-link" onClick={closeMenu}>Registrar Órden de Mantenimiento</Link>
                     </li>
                     </>
                 )}
@@ -53,6 +59,6 @@ export function Navigation() {
                     </>
                 )}
             </ul>
-        </nav>
+        </aside>
     );
 }
