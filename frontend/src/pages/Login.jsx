@@ -19,12 +19,43 @@ const Login = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>GCMF - Inicio de Sesión</h2>
-            <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} required />
-            <input type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} required />
-            <button type="submit">Entrar</button>
-        </form>
+        <div className="login-page-container">
+            <div className="login-card">
+                <div className="login-header">
+                    <div className="login-logo-icon">🚚</div>
+                    <h2>GCMF</h2>
+                    <p>Sistema de Gestión de Flotas</p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="login-form">
+                    <div className="form-group">
+                        <label>Correo Electrónico</label>
+                        <input 
+                            type="email" 
+                            placeholder="usuario@ejemplo.com" 
+                            onChange={(e) => setEmail(e.target.value)} 
+                            required 
+                            className="login-input"
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label>Contraseña</label>
+                        <input 
+                            type="password" 
+                            placeholder="••••••••" 
+                            onChange={(e) => setPassword(e.target.value)} 
+                            required 
+                            className="login-input"
+                        />
+                    </div>
+                    
+                    <button type="submit" className="btn-login">
+                        Entrar al Sistema
+                    </button>
+                </form>
+            </div>
+        </div>
     );
 };
 
