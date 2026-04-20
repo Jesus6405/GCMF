@@ -41,15 +41,18 @@ class CorrectiveMaintenanceOrderSerializer(serializers.ModelSerializer):
         model = CorrectiveMaintenanceOrder
         fields = '__all__'
 
+# serializer.py
+
 class MaintenanceOrderSerializer(serializers.ModelSerializer):
-    """
-    Serializador para la lista general que detecta el tipo de orden
-    """
+    # Añadimos un campo para ver el nombre legible del tipo si queremos
+    order_type_display = serializers.CharField(source='get_order_type_display', read_only=True)
+
     def to_representation(self, instance):
-        # Verificamos si la instancia tiene los atributos de las clases hijas
-        if hasattr(instance, 'preventivemaintenanceorder'):
+        # Usamos el campo explícito para decidir qué serializador usar
+        if instance.order_type == 'PREVENTIVE' and hasattr(instance, 'preventivemaintenanceorder'):
             return PreventiveMaintenanceOrderSerializer(instance.preventivemaintenanceorder, context=self.context).data
-        if hasattr(instance, 'correctivemaintenanceorder'):
+        
+        if instance.order_type == 'CORRECTIVE' and hasattr(instance, 'correctivemaintenanceorder'):
             return CorrectiveMaintenanceOrderSerializer(instance.correctivemaintenanceorder, context=self.context).data
         
         return super().to_representation(instance)

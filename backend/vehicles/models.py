@@ -148,36 +148,31 @@ class Incident(models.Model):
     def __str__(self):
         return f"Incidencia {self.id} - {self.vehicle.placa} ({self.urgency_level})"
     
-class MaintenanceOrder(models.Model):
-    id = models.AutoField(primary_key=True)
+# models.py
 
-    vehicle = models.ForeignKey(
-        Vehicle, 
-        on_delete=models.CASCADE, 
-        related_name='maintenances'
+class MaintenanceOrder(models.Model):
+    # Definimos las opciones de tipo
+    class OrderType(models.TextChoices):
+        PREVENTIVE = 'PREVENTIVE', 'Preventivo'
+        CORRECTIVE = 'CORRECTIVE', 'Correctivo'
+
+    id = models.AutoField(primary_key=True)
+    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='maintenances')
+    
+    # NUEVO CAMPO: Identificador explícito de tipo
+    order_type = models.CharField(
+        max_length=20,
+        choices=OrderType.choices,
+        default=OrderType.PREVENTIVE
     )
     
     start_date = models.DateTimeField(verbose_name="fechaInicio")
-
-    end_date = models.DateTimeField(
-        null=True, 
-        blank=True, 
-        verbose_name="fechaFin"
-    )
-
-    total_cost = models.FloatField(
-        default=0.0, 
-        verbose_name="costoTotal"
-    )
-
-    observations = models.TextField(
-        null=True, 
-        blank=True, 
-        verbose_name="observaciones"
-    )
+    end_date = models.DateTimeField(null=True, blank=True, verbose_name="fechaFin")
+    total_cost = models.FloatField(default=0.0, verbose_name="costoTotal")
+    observations = models.TextField(null=True, blank=True, verbose_name="observaciones")
 
     def __str__(self):
-        return f"Mantenimiento {self.id} - {self.vehicle.placa}"
+        return f"{self.order_type} - {self.id} ({self.vehicle.placa})"
 
 # Clase Especializada: Preventivo 
 class PreventiveMaintenanceOrder(MaintenanceOrder):

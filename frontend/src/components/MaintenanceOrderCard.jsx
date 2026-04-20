@@ -4,8 +4,7 @@ export function MaintenanceOrderCard({ maintenanceOrder, onDelete }) {
     const navigate = useNavigate();
 
     // Determinamos si es preventivo o correctivo para el estilo
-    // (Asumiendo que el backend envía un campo 'type' o verificando campos únicos)
-    const isCorrective = !!maintenanceOrder.incident; 
+    const isCorrective = maintenanceOrder.order_type === "CORRECTIVE"; 
     
     const typeLabel = isCorrective ? "Correctivo" : "Preventivo";
     const typeColor = isCorrective ? "var(--rojo-carmesi)" : "var(--azul-electrico)";
