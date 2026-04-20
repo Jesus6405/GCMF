@@ -1,13 +1,19 @@
 from django.urls import path, include
 from rest_framework import routers
-from .views import VehicleViewSet
-from .views import OdometerViewSet
-from .views import IncidentViewSet
+from .views import (
+    VehicleViewSet, OdometerViewSet, IncidentViewSet, 
+    MaintenanceOrderViewSet, 
+    PreventiveMaintenanceOrderViewSet, 
+    CorrectiveMaintenanceOrderViewSet
+)
 
 router = routers.DefaultRouter()
 router.register(r'vehicles', VehicleViewSet, 'vehicles')
 router.register(r'odometer', OdometerViewSet, 'odometer')
 router.register(r'incidents', IncidentViewSet, 'incidents')
+router.register(r'maintenanceOrders', MaintenanceOrderViewSet, 'maintenanceOrders')
+router.register(r'preventiveMaintenance', PreventiveMaintenanceOrderViewSet, 'preventiveMaintenance')
+router.register(r'correctiveMaintenance', CorrectiveMaintenanceOrderViewSet, 'correctiveMaintenance')
 
 urlpatterns = [
     path('api/v1/', include(router.urls))

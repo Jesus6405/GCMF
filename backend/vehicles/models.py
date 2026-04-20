@@ -147,3 +147,48 @@ class Incident(models.Model):
 
     def __str__(self):
         return f"Incidencia {self.id} - {self.vehicle.placa} ({self.urgency_level})"
+    
+# models.py
+
+class MaintenanceOrder(models.Model):
+    # Definimos las opciones de tipo
+    class OrderType(models.TextChoices):
+        PREVENTIVE = 'PREVENTIVE', 'Preventivo'
+        CORRECTIVE = 'CORRECTIVE', 'Correctivo'
+
+    id = models.AutoField(primary_key=True)
+    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='maintenances')
+    
+    # NUEVO CAMPO: Identificador explícito de tipo
+    order_type = models.CharField(
+        max_length=20,
+        choices=OrderType.choices,
+        default=OrderType.PREVENTIVE
+    )
+    
+    start_date = models.DateTimeField(verbose_name="fechaInicio")
+    end_date = models.DateTimeField(null=True, blank=True, verbose_name="fechaFin")
+    total_cost = models.FloatField(default=0.0, verbose_name="costoTotal")
+    observations = models.TextField(null=True, blank=True, verbose_name="observaciones")
+
+    def __str__(self):
+        return f"{self.order_type} - {self.id} ({self.vehicle.placa})"
+
+# Clase Especializada: Preventivo 
+class PreventiveMaintenanceOrder(MaintenanceOrder):
+    scheduled_km = models.FloatField(verbose_name="kmProgramado")
+
+    service_type = models.CharField(
+        max_length=100, 
+        verbose_name="tipoServicio"
+    )
+
+# Clase Especializada: Correctivo 
+class CorrectiveMaintenanceOrder(MaintenanceOrder):
+    # Atributo propio solicitado: una incidencia
+    incident = models.OneToOneField(
+        Incident, 
+        on_delete=models.CASCADE, 
+        related_name='correction',
+        help_text="Vinculada a la orden de mantenimiento correctiva"
+    )

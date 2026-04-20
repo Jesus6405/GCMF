@@ -1,11 +1,13 @@
 #from django.shortcuts import render
 from rest_framework import viewsets
-from .serializer import VehicleSerializer
-from .models import Vehicle
-from .serializer import OdometerLogSerializer
-from .models import OdometerLog
-from .serializer import IncidentSerializer
-from .models import Incident
+from .serializer import (
+    VehicleSerializer, OdometerLogSerializer, IncidentSerializer,
+    MaintenanceOrderSerializer, PreventiveMaintenanceOrderSerializer, CorrectiveMaintenanceOrderSerializer
+)
+from .models import (
+    Vehicle, OdometerLog, Incident, 
+    MaintenanceOrder, PreventiveMaintenanceOrder, CorrectiveMaintenanceOrder
+)
 
 # Create your views here.
 class VehicleViewSet(viewsets.ModelViewSet):
@@ -19,3 +21,15 @@ class OdometerViewSet(viewsets.ModelViewSet):
 class IncidentViewSet(viewsets.ModelViewSet):
     queryset = Incident.objects.all()
     serializer_class = IncidentSerializer
+
+class MaintenanceOrderViewSet(viewsets.ModelViewSet):
+    queryset = MaintenanceOrder.objects.all()
+    serializer_class = MaintenanceOrderSerializer
+
+class PreventiveMaintenanceOrderViewSet(viewsets.ModelViewSet):
+    queryset = PreventiveMaintenanceOrder.objects.all()
+    serializer_class = PreventiveMaintenanceOrderSerializer
+
+class CorrectiveMaintenanceOrderViewSet(viewsets.ModelViewSet):
+    queryset = CorrectiveMaintenanceOrder.objects.all()
+    serializer_class = CorrectiveMaintenanceOrderSerializer

@@ -12,3 +12,15 @@ class OdometerConfig(AppConfig):
 class IncidentConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'incidents'
+
+class PreventiveMaintenanceOrderConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'preventiveMaintenance'
+
+class CorrectiveMaintenanceOrderConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'correctiveMaintenance'
+
+class MaintenanceOrderConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'maintenanceOrders'
