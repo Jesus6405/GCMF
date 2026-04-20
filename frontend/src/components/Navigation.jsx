@@ -21,7 +21,10 @@ export function Navigation() {
                 {['GERENTE_FLOTA', 'ADMINISTRADOR_OPERATIVO'].includes(user?.rol) && (
                     <>
                     <li>
-                        <Link to="/usuarios" className="menu-link">Gestión de Personal</Link>
+                        <Link to="/users" className="menu-link">
+                        Gestión de Personal
+                        <Link to="/create-user" className="menu-link">Registrar Usuario</Link>
+                        </Link>
                     </li>
                     <li>
                         <Link to="/vehicles-create" className="menu-link">Registrar Vehículo</Link>

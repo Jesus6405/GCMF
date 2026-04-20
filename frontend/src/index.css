@@ -210,20 +210,6 @@ body {
   background-color: var(--danger-hover);
 }
 
-/* Diseño Responsivo (Pantallas pequeñas) */
-@media (max-width: 768px) {
-  .app-layout {
-    grid-template-columns: 1fr; /* Cambia a una sola columna */
-  }
-  
-  .sidebar {
-    padding: 10px;
-  }
-  
-  .table-container {
-    overflow-x: auto;
-  }
-}
 
 /* Contenedor del Formulario */
 .form-page-container {
@@ -405,4 +391,141 @@ body {
     .elaborated-form {
         grid-template-columns: 1fr;
     }
+}
+
+/* Contenedor principal para centrar el login en toda la pantalla */
+.login-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #F8FAFC; /* Fondo claro de superficie */
+    padding: 20px;
+}
+
+/* Tarjeta blanca del login */
+.login-card {
+  background-color: #FFFFFF;
+  width: 100%;
+  max-width: 480px; /* <--- Aumentamos esto para campos más largos */
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  border: 1px solid #E2E8F0;
+}
+
+/* Encabezado del login (Logo y Títulos) */
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-logo-icon {
+    background-color: #2563EB; /* Azul primario */
+    color: white;
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 15px auto;
+    border-radius: 12px;
+}
+
+.login-header h2 {
+    color: #0F172A; /* Azul oscuro industrial */
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.login-header p {
+    color: #64748B;
+    font-size: 0.9rem;
+}
+
+/* Formulario e Inputs */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.login-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #CBD5E1;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background-color: #F8FAFC;
+    transition: all 0.2s ease;
+}
+
+.login-input:focus {
+    outline: none;
+    border-color: #2563EB;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    background-color: #FFFFFF;
+}
+
+/* Botón principal */
+.btn-login {
+    background-color: #2563EB;
+    color: #FFFFFF;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-top: 10px;
+}
+
+.btn-login:hover {
+    background-color: #1D4ED8;
+}
+
+/*Responsive para dispositivos moviles*/
+@media (max-width: 768px) {
+  /* Layout general */
+  .app-layout {
+    grid-template-columns: 1fr; /* Cambia a una sola columna */
+  }
+  
+  .sidebar {
+    padding: 15px;
+  }
+
+  .main-content {
+    padding: 15px; /* Reducimos el padding en móvil para ganar espacio */
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+
+  /* --- AJUSTES NUEVOS PARA LOS FORMULARIOS EN MÓVIL --- */
+  
+  /* 1. Apilamos el encabezado y los botones */
+  .form-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  /* 2. Colapsamos las dos columnas del formulario a una sola */
+  .grid-form-fields.dual-column {
+    grid-template-columns: 1fr;
+  }
+
+  /* 3. Aseguramos que los botones de guardar ocupen todo el ancho */
+  .form-submit-zone .btn-save {
+    width: 100%;
+  }
 }

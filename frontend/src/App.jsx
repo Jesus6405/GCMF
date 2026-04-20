@@ -10,44 +10,44 @@ import { MaintenanceOrdersFormPage } from './pages/MaintenanceOrdersFormPage';
 import { Navigation } from './components/Navigation';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import CrearUsuario from './pages/CreateUser';
+import UsersFormPage from './pages/UsersFormPage';
 import Unauthorized from './pages/Unauthorized';
 import ProtectedRoute from './components/ProtectedRoute';
-import UsuariosLista from './pages/UsuariosLista';
+import { UsersPage } from './pages/UsersPage';
 
 function App() {
   return (
     <BrowserRouter>
-      <div className="app-layout">
-        <Routes>
-          {/* --- NIVEL 0: RUTAS PÚBLICAS (Sin Nav) --- */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/unauthorized" element={<Unauthorized />} />
+      <Routes>
+        {/* --- NIVEL 0: RUTAS PÚBLICAS (Libres del grid app-layout) --- */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
 
-          {/* --- NIVEL 1: RUTAS PROTEGIDAS CON NAVEGACIÓN --- */}
-          {/* Envolvemos todas las rutas que REQUIEREN estar logueado y USAN el Nav */}
-          <Route element={
-            <ProtectedRoute>
+        {/* --- NIVEL 1: RUTAS PROTEGIDAS CON NAVEGACIÓN --- */}
+        <Route element={
+          <ProtectedRoute>
+            <div className="app-layout">{/*app layout para el css grid que centra el formulario*/}
               <Navigation /> 
               <main className="main-content">
                 <Outlet /> 
               </main>
-            </ProtectedRoute>
-          }>
-            {/* Dashboard para todos */}
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/" element={<Navigate to="/dashboard" />} />
+            </div>
+          </ProtectedRoute>
+        }>
+          {/* Dashboard para todos */}
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/" element={<Navigate to="/dashboard" />} />
 
-            {/* Rutas para Conductores */}
-            <Route path="/odometerLog" element={<OdometerLogsPage />} />
-            <Route path="/odometerLog-create" element={<OdometerLogsFormPage />} />
-            <Route path="/odometerLog/:id" element={<OdometerLogsFormPage />} />
+          {/* Rutas para Conductores */}
+          <Route path="/odometerLog" element={<OdometerLogsPage />} />
+          <Route path="/odometerLog-create" element={<OdometerLogsFormPage />} />
+          <Route path="/odometerLog/:id" element={<OdometerLogsFormPage />} />
 
             {/* --- NIVEL 2: SOLO STAFF (Admin y Gerente) --- */}
             <Route element={<ProtectedRoute allowedRoles={['GERENTE_FLOTA', 'ADMINISTRADOR_OPERATIVO']}/>}>
-              <Route path="/usuarios" element={<UsuariosLista />} />
-              <Route path="/crear_usuario" element={<CrearUsuario />} />
-              <Route path="/editar_usuario/:id" element={<CrearUsuario />} />
+              <Route path="/users" element={<UsersPage />} />
+              <Route path="/create-user" element={<UsersFormPage />} />
+              <Route path="/edit-user/:id" element={<UsersFormPage />} />
               <Route path="/vehicles" element={<VehiclesPage />} />
               <Route path="/vehicles-create" element={<VehiclesFormPage />} />
               <Route path="/vehicles/:placa" element={<VehiclesFormPage />} />
@@ -59,11 +59,11 @@ function App() {
               <Route path="/maintenanceOrders/:id" element={<MaintenanceOrdersFormPage />} />
             </Route>
           </Route>
+        </Route>
 
-          {/* 404 */}
-          <Route path="*" element={<h1>404 - Not Found</h1>} />
-        </Routes>
-      </div>
+        {/* 404 */}
+        <Route path="*" element={<h1>404 - Not Found</h1>} />
+      </Routes>
     </BrowserRouter>
   );
 }
