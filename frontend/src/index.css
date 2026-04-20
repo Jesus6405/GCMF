@@ -210,7 +210,6 @@ body {
   background-color: var(--danger-hover);
 }
 
-
 /* Contenedor del Formulario */
 .form-page-container {
     max-width: 1300px;
@@ -387,7 +386,7 @@ body {
     color: #475569;
 }
 
-/* Ajustes Responsivos */
+/* Ajustes Responsivos para pantallas medianas */
 @media (max-width: 1024px) {
     .elaborated-form {
         grid-template-columns: 1fr;
@@ -400,7 +399,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #F8FAFC; /* Fondo claro de superficie */
+    background-color: #F8FAFC; 
     padding: 20px;
 }
 
@@ -408,7 +407,7 @@ body {
 .login-card {
   background-color: #FFFFFF;
   width: 100%;
-  max-width: 480px; /* <--- Aumentamos esto para campos más largos */
+  max-width: 480px; 
   padding: 40px;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
@@ -422,7 +421,7 @@ body {
 }
 
 .login-logo-icon {
-    background-color: #2563EB; /* Azul primario */
+    background-color: #2563EB; 
     color: white;
     font-size: 2rem;
     width: 60px;
@@ -435,7 +434,7 @@ body {
 }
 
 .login-header h2 {
-    color: #0F172A; /* Azul oscuro industrial */
+    color: #0F172A; 
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 5px;
@@ -488,10 +487,9 @@ body {
     background-color: #1D4ED8;
 }
 
-/* --- AGREGAR AL FINAL DE TU CSS O CERCA DEL SIDEBAR --- */
 /* Botón de Menú Móvil (Hamburguesa) */
 .mobile-menu-btn {
-  display: none; /* Oculto en PC */
+  display: none; /* Oculto en pantallas grandes */
   position: fixed;
   top: 15px;
   left: 15px;
@@ -514,25 +512,19 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(15, 23, 42, 0.6); /* Color oscuro semitransparente */
+  background-color: rgba(15, 23, 42, 0.6); 
   z-index: 999; /* Justo debajo del sidebar */
   backdrop-filter: blur(2px);
 }
 
-/* Modificamos la transición del sidebar original (búscalo y agrégale esto) */
-.sidebar {
-  /* ... tus estilos actuales ... */
-  transition: transform 0.3s ease-in-out; /* Animación suave */
-}
-
-/* --- DISEÑO RESPONSIVO (PANTALLAS PEQUEÑAS) --- */
+/*Diseño responsive para pantallas pequeñas*/
 @media (max-width: 768px) {
   /* Layout general */
   .app-layout {
     grid-template-columns: 1fr; 
   }
 
-  /* Ajustes del Menú Lateral (Off-canvas) */
+  /* Ajustes del Menú Lateral*/
   .sidebar {
     position: fixed;
     top: 0;
@@ -540,6 +532,7 @@ body {
     height: 100vh;
     width: 260px;
     padding: 15px;
+    padding-top: 75px;
     transform: translateX(-100%); /* Escondido por defecto */
     z-index: 1000;
     overflow-y: auto; 
@@ -561,7 +554,7 @@ body {
 
   /* Ajustes de contenido y formularios */
   .main-content {
-    padding: 60px 15px 15px 15px; /* Espacio para el botón hamburguesa */
+    padding: 60px 15px 15px 60px; /* Espacio para el botón hamburguesa */
   }
   
   .table-container {
