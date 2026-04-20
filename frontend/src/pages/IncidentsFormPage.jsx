@@ -46,7 +46,7 @@ export function IncidentsFormPage() {
         <div className="form-page-container">
             <header className="form-header">
                 <span className="breadcrumb">HU-04 · Reporte de Fallas</span>
-                <h1>{id ? "Editar Incidencia" : "Reportar Incidencia / Novedad"}</h1>
+                <h1>{id ? "Editar Incidencia" : "Reportar Incidencia"}</h1>
             </header>
 
             <form onSubmit={handleSubmit} className="elaborated-form">

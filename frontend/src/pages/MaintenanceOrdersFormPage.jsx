@@ -13,7 +13,6 @@ export function MaintenanceOrdersFormPage() {
     const { id } = useParams();
     const navigate = useNavigate();
     
-    // El tipo se maneja internamente como 'preventive' o 'corrective' para la UI
     const [type, setType] = useState("preventive");
     const [vehicles, setVehicles] = useState([]);
     const [incidents, setIncidents] = useState([]);
@@ -27,19 +26,18 @@ export function MaintenanceOrdersFormPage() {
         scheduled_km: "", 
         service_type: "", 
         incident: "",
-        order_type: "PREVENTIVE" // Valor por defecto
+        order_type: "PREVENTIVE"
     });
 
     useEffect(() => {
         async function load() {
             const [v, i] = await Promise.all([getAllVehicles(), getAllIncidents()]);
             setVehicles(v.data);
-            setIncidents(i.data.filter(inc => inc.report_status !== "Resolved" || id)); // Permitir el incidente actual si es edición
+            setIncidents(i.data.filter(inc => inc.report_status !== "Resolved" || id));
             
             if (id) {
                 const res = await getMaintenanceOrder(id);
                 setOrder(res.data);
-                // Sincronizamos el estado de la UI con el tipo real de la orden
                 const currentType = res.data.order_type === "CORRECTIVE" ? "corrective" : "preventive";
                 setType(currentType);
             }
@@ -64,14 +62,11 @@ export function MaintenanceOrdersFormPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Validación cronológica
         if (new Date(order.end_date) <= new Date(order.start_date)) {
             alert("Error: La fecha de finalización debe ser posterior a la de inicio.");
             return;
         }
 
-        // Preparamos los datos incluyendo el order_type correcto para el backend
         const dataToSend = {
             ...order,
             order_type: type === "preventive" ? "PREVENTIVE" : "CORRECTIVE"
@@ -95,30 +90,37 @@ export function MaintenanceOrdersFormPage() {
     return (
         <div className="form-page-container">
             <header className="form-header">
-                <span className="breadcrumb">MANTENIMIENTO · {id ? 'EDICIÓN' : 'REGISTRO'}</span>
-                <h1>Orden de Trabajo #{id || 'NUEVA'}</h1>
+                <div className="header-info">
+                    <span className="breadcrumb">HU-06: {id ? 'Edición' : 'Registro'} de Orden de Mantenimiento</span>
+                    <h1>Orden de mantenimiento</h1>
+                </div>
             </header>
 
-            <form onSubmit={handleSubmit} className="elaborated-form" style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "25px" }}>
+            {/* Eliminamos el estilo inline 'display: grid' para que use la clase del index.css */}
+            <form onSubmit={handleSubmit} className="elaborated-form">
                 
                 <div className="form-main-content">
                     <section className="form-section-card">
-                        <div className="section-title"><h3>Datos de la Intervención</h3></div>
+                        <div className="section-title">
+                            <span className="icon">#</span>
+                            <h3>Datos de la Intervención</h3>
+                        </div>
                         
-                        {/* El selector de tipo solo aparece si estamos creando una orden nueva */}
                         {!id && (
-                            <div className="type-toggle-group">
+                            <div className="type-toggle-group" style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
                                 <button 
                                     type="button" 
-                                    className={type === 'preventive' ? 'active' : ''} 
+                                    className={`btn ${type === 'preventive' ? 'btn-edit' : 'btn-secondary'}`} 
                                     onClick={() => setType('preventive')}
+                                    style={{ flex: 1 }}
                                 >
                                     PREVENTIVO
                                 </button>
                                 <button 
                                     type="button" 
-                                    className={type === 'corrective' ? 'active alert' : ''} 
+                                    className={`btn ${type === 'corrective' ? 'btn-delete' : 'btn-secondary'}`} 
                                     onClick={() => setType('corrective')}
+                                    style={{ flex: 1 }}
                                 >
                                     CORRECTIVO
                                 </button>
@@ -132,33 +134,45 @@ export function MaintenanceOrdersFormPage() {
                                     value={order.vehicle} 
                                     onChange={e => setOrder({...order, vehicle: e.target.value})} 
                                     required
-                                    disabled={type === "corrective"} // Bloqueado si es correctivo (viene de incidencia)
+                                    disabled={type === "corrective"}
                                 >
                                     <option value="">Seleccione placa...</option>
                                     {vehicles.map(v => <option key={v.placa} value={v.placa}>{v.placa} - {v.brand}</option>)}
                                 </select>
                             </div>
                             
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px", marginTop: "15px" }}>
+                            {/* Usamos la clase dual-column que ya tiene media query en index.css */}
+                            <div className="grid-form-fields dual-column" style={{ marginTop: "15px" }}>
                                 <div className="form-group">
                                     <label>Fecha de Inicio *</label>
-                                    <input type="datetime-local" value={order.start_date.substring(0,16)} onChange={e => setOrder({...order, start_date: e.target.value})} required />
+                                    <input 
+                                        type="datetime-local" 
+                                        value={order.start_date.substring(0,16)} 
+                                        onChange={e => setOrder({...order, start_date: e.target.value})} 
+                                        required 
+                                    />
                                 </div>
                                 <div className="form-group">
                                     <label>Fecha de Finalización *</label>
-                                    <input type="datetime-local" value={order.end_date?.substring(0,16)} onChange={e => setOrder({...order, end_date: e.target.value})} required />
+                                    <input 
+                                        type="datetime-local" 
+                                        value={order.end_date?.substring(0,16)} 
+                                        onChange={e => setOrder({...order, end_date: e.target.value})} 
+                                        required 
+                                    />
                                 </div>
                             </div>
                         </div>
                     </section>
 
-                    <section className="form-section-card" style={{ marginTop: "20px" }}>
+                    <section className="form-section-card">
                         <div className="section-title">
+                            <span className="icon">⚙️</span>
                             <h3>{type === 'preventive' ? 'Especificaciones Preventivas' : 'Detalle de Incidencia'}</h3>
                         </div>
                         
                         {type === "preventive" ? (
-                            <div className="grid-form-fields dual">
+                            <div className="grid-form-fields dual-column">
                                 <div className="form-group">
                                     <label>Kilometraje Programado</label>
                                     <input 
@@ -185,9 +199,9 @@ export function MaintenanceOrdersFormPage() {
                                     value={order.incident} 
                                     onChange={handleIncidentChange} 
                                     required
-                                    // disabled={!!id} // Una orden correctiva no puede cambiar de incidencia vinculada
+                                    disabled={!!id}
                                 >
-                                    <option value="">Seleccione la falla...</option>
+                                    <option value="">Seleccione la falla reportada...</option>
                                     {incidents.map(inc => (
                                         <option key={inc.id} value={inc.id}>
                                             #{inc.id} - {inc.vehicle}: {inc.description.substring(0, 40)}...
@@ -201,27 +215,32 @@ export function MaintenanceOrdersFormPage() {
 
                 <aside className="form-sidebar-content">
                     <div className="side-card cost-card">
-                        <div className="section-title"><h3>Resumen Financiero</h3></div>
+                        <div className="section-title">
+                            <span className="icon">💰</span>
+                            <h3>Resumen Financiero</h3>
+                        </div>
                         <div className="form-group">
                             <label>Costo Total ($)</label>
                             <input 
                                 type="number" 
-                                className="big-cost-input" 
+                                className="login-input" /* Reutilizamos clase de input con ancho completo */
+                                style={{ fontSize: '1.25rem', fontWeight: '700', textAlign: 'right' }}
                                 value={order.total_cost} 
                                 onChange={e => setOrder({...order, total_cost: e.target.value})} 
                             />
                         </div>
-                        <div className="form-group" style={{ marginTop: "15px" }}>
+                        <div className="form-group">
                             <label>Observaciones</label>
                             <textarea 
                                 rows="5" 
+                                className="login-input"
                                 value={order.observations} 
                                 onChange={e => setOrder({...order, observations: e.target.value})} 
                             />
                         </div>
                     </div>
 
-                    <button type="submit" className="btn btn-save-full">
+                    <button type="submit" className="btn btn-save">
                         {id ? 'ACTUALIZAR ORDEN' : 'FINALIZAR REGISTRO'}
                     </button>
                 </aside>
