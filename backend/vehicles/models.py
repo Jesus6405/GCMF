@@ -147,37 +147,56 @@ class Incident(models.Model):
 
     def __str__(self):
         return f"Incidencia {self.id} - {self.vehicle.placa} ({self.urgency_level})"
-    
-# models.py
 
 class MaintenanceOrder(models.Model):
-    # Definimos las opciones de tipo
+    # Opciones de tipo de mantenimiento
     class OrderType(models.TextChoices):
         PREVENTIVE = 'PREVENTIVE', 'Preventivo'
         CORRECTIVE = 'CORRECTIVE', 'Correctivo'
 
+    # NUEVO: Opciones de estado para el ciclo de vida de la orden
+    class OrderStatus(models.TextChoices):
+        PLANNING = 'PLANNING', 'Planificación'
+        EXECUTION = 'EXECUTION', 'Ejecución'
+        CLOSURE = 'CLOSURE', 'Cierre'
+        CANCELLED = 'CANCELLED', 'Cancelada'
+
     id = models.AutoField(primary_key=True)
-    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='maintenances')
+    vehicle = models.ForeignKey('Vehicle', on_delete=models.CASCADE, related_name='maintenances')
     
-    # NUEVO CAMPO: Identificador explícito de tipo
     order_type = models.CharField(
         max_length=20,
         choices=OrderType.choices,
         default=OrderType.PREVENTIVE
     )
+
+    # El estado actual de la orden
+    status = models.CharField(
+        max_length=20,
+        choices=OrderStatus.choices,
+        default=OrderStatus.PLANNING,
+        verbose_name="estadoActual"
+    )
     
+    # --- FASE 1: PLANIFICACIÓN (Llenado por Administrador Operativo) ---
     start_date = models.DateTimeField(verbose_name="fechaInicio")
+    estimated_budget = models.FloatField(default=0.0, verbose_name="presupuestoEstimado")
+    
+    # --- FASE 2: EJECUCIÓN (Llenado por el Mecánico) ---
+    man_hours = models.FloatField(default=0.0, verbose_name="horasHombre")
+    mechanic_observations = models.TextField(null=True, blank=True, verbose_name="observacionesTecnicas")
+    
+    # --- FASE 3: CIERRE (Llenado/Validado por Administrador/Gerente) ---
     end_date = models.DateTimeField(null=True, blank=True, verbose_name="fechaFin")
-    total_cost = models.FloatField(default=0.0, verbose_name="costoTotal")
-    observations = models.TextField(null=True, blank=True, verbose_name="observaciones")
+    final_odometer = models.FloatField(null=True, blank=True, verbose_name="odometroCierre")
+    total_cost = models.FloatField(default=0.0, verbose_name="costoTotalReal")
 
     def __str__(self):
-        return f"{self.order_type} - {self.id} ({self.vehicle.placa})"
+        return f"{self.get_order_type_display()} - {self.id} ({self.vehicle.placa}) - {self.get_status_display()}"
 
 # Clase Especializada: Preventivo 
 class PreventiveMaintenanceOrder(MaintenanceOrder):
     scheduled_km = models.FloatField(verbose_name="kmProgramado")
-
     service_type = models.CharField(
         max_length=100, 
         verbose_name="tipoServicio"
@@ -185,9 +204,8 @@ class PreventiveMaintenanceOrder(MaintenanceOrder):
 
 # Clase Especializada: Correctivo 
 class CorrectiveMaintenanceOrder(MaintenanceOrder):
-    # Atributo propio solicitado: una incidencia
     incident = models.OneToOneField(
-        Incident, 
+        'Incident', 
         on_delete=models.CASCADE, 
         related_name='correction',
         help_text="Vinculada a la orden de mantenimiento correctiva"
