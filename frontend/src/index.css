@@ -578,29 +578,28 @@ body {
   .form-submit-zone .btn-save {
     width: 100%;
   }
+
+  .notif-dropdown {
+      position: fixed; /* Cambiamos a fixed para que no dependa del sidebar */
+      top: 60px;
+      left: 10px;
+      right: 10px;
+      width: calc(100% - 20px); /* Ocupa casi todo el ancho de la pantalla */
+      max-height: 70vh;
+  }
+  
+  .notification-container {
+      position: static; /* Permite que el dropdown se posicione respecto a la pantalla */
+  }
 }
 
-.notification-container { position: relative; margin-left: 15px; }
-
-.notif-bell { 
-    background: transparent; border: none; font-size: 1.4rem; cursor: pointer; color: white;
+.type-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-right: 8px;
+    background: #E2E8F0;
 }
 
-.badge {
-    position: absolute; top: -5px; right: -10px; background: var(--danger-red);
-    color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 50%;
-}
-
-.notif-dropdown {
-    position: absolute; top: 40px; left: 0; width: 280px; background: white;
-    border: 1px solid var(--border-color); border-radius: 8px; z-index: 1000;
-    max-height: 400px; overflow-y: auto; color: var(--text-main);
-}
-
-.notif-header { padding: 10px; font-weight: bold; border-bottom: 1px solid var(--border-color); background: #F8FAFC; }
-
-.notif-item { padding: 12px; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; }
-
-.notif-item.unread { background-color: #EFF6FF; border-left: 4px solid var(--primary-blue); }
-
-.notif-item.read { opacity: 0.7; }
+.type-tag.mileage { color: var(--primary-blue); background: #DBEAFE; }
