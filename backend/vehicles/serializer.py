@@ -1,7 +1,10 @@
 from rest_framework import serializers
 from .models import (
-    Vehicle, OdometerLog, Incident, 
-    MaintenanceOrder, PreventiveMaintenanceOrder, CorrectiveMaintenanceOrder
+    Vehicle, 
+    OdometerLog, 
+    Incident, 
+    MaintenanceOrder, PreventiveMaintenanceOrder, CorrectiveMaintenanceOrder,
+    Notification, MileageNotification
 )
 
 class VehicleSerializer(serializers.ModelSerializer):
@@ -41,8 +44,6 @@ class CorrectiveMaintenanceOrderSerializer(serializers.ModelSerializer):
         model = CorrectiveMaintenanceOrder
         fields = '__all__'
 
-# serializer.py
-
 class MaintenanceOrderSerializer(serializers.ModelSerializer):
     # Añadimos un campo para ver el nombre legible del tipo si queremos
     order_type_display = serializers.CharField(source='get_order_type_display', read_only=True)
@@ -60,3 +61,17 @@ class MaintenanceOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = MaintenanceOrder
         fields = '__all__'
+
+class MileageNotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MileageNotification
+        fields = '__all__'
+
+class NotificationSerializer(serializers.ModelSerializer):
+    notif_type_display = serializers.CharField(source='get_notif_type_display', read_only=True)
+
+    def to_representation(self, instance):
+        if instance.notif_type == 'MILEAGE' and hasattr(instance, 'mileagenotification'):
+            return MileageNotificationSerializer(instance.mileagenotification, context=self.context).data
+        
+        return super().to_representation(instance)

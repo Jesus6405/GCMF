@@ -192,3 +192,31 @@ class CorrectiveMaintenanceOrder(MaintenanceOrder):
         related_name='correction',
         help_text="Vinculada a la orden de mantenimiento correctiva"
     )
+
+class Notification(models.Model):
+    class NotificationType(models.TextChoices):
+        MILEAGE = 'MILEAGE', 'Kilometraje'
+        LEGAL = 'LEGAL', 'Documentación'
+
+    id = models.AutoField(primary_key=True)
+    message = models.CharField(max_length=255)
+    notif_type = models.CharField(
+        max_length=20, 
+        choices=NotificationType.choices, 
+        default=NotificationType.MILEAGE
+    )
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at'] # Las más nuevas primero
+
+class MileageNotification(Notification):
+    preventive_order = models.ForeignKey(
+        PreventiveMaintenanceOrder, 
+        on_delete=models.CASCADE, 
+        related_name='mileage_notifications',
+        help_text="Asociada a la orden de mantenimiento preventivo"
+    )
+    
+# class LegalNotification(Notification):

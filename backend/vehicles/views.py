@@ -2,11 +2,15 @@
 from rest_framework import viewsets
 from .serializer import (
     VehicleSerializer, OdometerLogSerializer, IncidentSerializer,
-    MaintenanceOrderSerializer, PreventiveMaintenanceOrderSerializer, CorrectiveMaintenanceOrderSerializer
+    MaintenanceOrderSerializer, PreventiveMaintenanceOrderSerializer, CorrectiveMaintenanceOrderSerializer,
+    NotificationSerializer, MileageNotificationSerializer
 )
 from .models import (
-    Vehicle, OdometerLog, Incident, 
-    MaintenanceOrder, PreventiveMaintenanceOrder, CorrectiveMaintenanceOrder
+    Vehicle, 
+    OdometerLog, 
+    Incident, 
+    MaintenanceOrder, PreventiveMaintenanceOrder, CorrectiveMaintenanceOrder,
+    Notification, MileageNotification
 )
 
 # Create your views here.
@@ -33,3 +37,11 @@ class PreventiveMaintenanceOrderViewSet(viewsets.ModelViewSet):
 class CorrectiveMaintenanceOrderViewSet(viewsets.ModelViewSet):
     queryset = CorrectiveMaintenanceOrder.objects.all()
     serializer_class = CorrectiveMaintenanceOrderSerializer
+
+class NotificationViewSet(viewsets.ModelViewSet):
+    queryset = Notification.objects.all()
+    serializer_class = NotificationSerializer
+
+class MileageNotificationViewSet(viewsets.ModelViewSet):
+    queryset = MileageNotification.objects.all()
+    serializer_class = MileageNotificationSerializer

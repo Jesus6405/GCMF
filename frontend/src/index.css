@@ -579,3 +579,28 @@ body {
     width: 100%;
   }
 }
+
+.notification-container { position: relative; margin-left: 15px; }
+
+.notif-bell { 
+    background: transparent; border: none; font-size: 1.4rem; cursor: pointer; color: white;
+}
+
+.badge {
+    position: absolute; top: -5px; right: -10px; background: var(--danger-red);
+    color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 50%;
+}
+
+.notif-dropdown {
+    position: absolute; top: 40px; left: 0; width: 280px; background: white;
+    border: 1px solid var(--border-color); border-radius: 8px; z-index: 1000;
+    max-height: 400px; overflow-y: auto; color: var(--text-main);
+}
+
+.notif-header { padding: 10px; font-weight: bold; border-bottom: 1px solid var(--border-color); background: #F8FAFC; }
+
+.notif-item { padding: 12px; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; }
+
+.notif-item.unread { background-color: #EFF6FF; border-left: 4px solid var(--primary-blue); }
+
+.notif-item.read { opacity: 0.7; }

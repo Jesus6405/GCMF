@@ -24,3 +24,11 @@ class CorrectiveMaintenanceOrderConfig(AppConfig):
 class MaintenanceOrderConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'maintenanceOrders'
+
+class NotificationConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'notifications'
+
+class MileageNotificationConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'mileageNotifications'
