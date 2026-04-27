@@ -3,8 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getAllVehicles } from "../api/vehicles.api";
 import { getAllIncidents } from "../api/incidents.api";
 import { 
-    createPreventiveOrder, 
-    createCorrectiveOrder, 
+    createMaintenanceOrder, 
     getMaintenanceOrder, 
     updateMaintenanceOrder 
 } from "../api/maintenanceOrders.api";
@@ -42,16 +41,16 @@ export function MaintenanceOrdersFormPage() {
             
             if (id) {
                 const res = await getMaintenanceOrder(id);
-                // Aseguramos que los valores nulos del backend no rompan los inputs controlados
                 const data = {
                     ...res.data,
+                    // Si el backend devuelve el objeto incidente, extraemos solo el ID para el select
+                    incident: res.data.incident?.id || res.data.incident || "",
                     end_date: res.data.end_date || "",
-                    mechanic_observations: res.data.mechanic_observations || "",
-                    final_odometer: res.data.final_odometer || ""
-                };
-                setOrder(data);
-                const currentType = data.order_type === "CORRECTIVE" ? "corrective" : "preventive";
-                setType(currentType);
+                    scheduled_km: res.data.scheduled_km || "",
+                    service_type: res.data.service_type || ""
+            };
+            setOrder(data);
+            setType(res.data.order_type === "CORRECTIVE" ? "corrective" : "preventive");
             }
         }
         load();
@@ -90,9 +89,7 @@ export function MaintenanceOrdersFormPage() {
             if (id) {
                 await updateMaintenanceOrder(id, dataToSend);
             } else {
-                type === "preventive" 
-                    ? await createPreventiveOrder(dataToSend) 
-                    : await createCorrectiveOrder(dataToSend);
+                await createMaintenanceOrder(dataToSend);
             }
             navigate("/maintenanceOrders");
         } catch (err) { 

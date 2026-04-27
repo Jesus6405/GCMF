@@ -41,23 +41,43 @@ class CorrectiveMaintenanceOrderSerializer(serializers.ModelSerializer):
         model = CorrectiveMaintenanceOrder
         fields = '__all__'
 
+# Solo se usa para el LIST (GET)
 class MaintenanceOrderSerializer(serializers.ModelSerializer):
-    # Añadimos un campo para ver el nombre legible del tipo si queremos
     order_type_display = serializers.CharField(source='get_order_type_display', read_only=True)
 
+    scheduled_km = serializers.FloatField(
+        source='preventivemaintenanceorder.scheduled_km',
+        read_only=True
+    )
+
+    service_type = serializers.CharField(
+        source='preventivemaintenanceorder.service_type',
+        read_only=True
+    )
+
+    incident = serializers.PrimaryKeyRelatedField(
+        source='correctivemaintenanceorder.incident',
+        read_only=True
+    )
+
+    class Meta:
+
+        model = MaintenanceOrder
+
+        fields = [
+            'id', 'vehicle', 'order_type', 'order_type_display', 'status',
+            'start_date', 'estimated_budget', 'man_hours',
+            'mechanic_observations', 'end_date', 'final_odometer',
+            'total_cost', 'scheduled_km', 'service_type', 'incident'
+        ]
+
     def to_representation(self, instance):
-        # Usamos el campo explícito para decidir qué serializador usar
         if instance.order_type == 'PREVENTIVE' and hasattr(instance, 'preventivemaintenanceorder'):
             return PreventiveMaintenanceOrderSerializer(instance.preventivemaintenanceorder, context=self.context).data
-        
         if instance.order_type == 'CORRECTIVE' and hasattr(instance, 'correctivemaintenanceorder'):
             return CorrectiveMaintenanceOrderSerializer(instance.correctivemaintenanceorder, context=self.context).data
         
         return super().to_representation(instance)
-
-    class Meta:
-        model = MaintenanceOrder
-        fields = '__all__'
 
 class DocumentSerializer(serializers.ModelSerializer):
     class Meta:

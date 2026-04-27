@@ -8,8 +8,7 @@ const api = axios.create({
 export const getAllMaintenanceOrders = () => api.get('');
 
 // Crear específicas según el tipo
-export const createPreventiveOrder = (data) => api.post('/', data);
-export const createCorrectiveOrder = (data) => api.post('/', data);
+export const createMaintenanceOrder = (data) => api.post('/', data);
 
 // Otras operaciones (usando el ID unificado)
 export const getMaintenanceOrder = (id) => api.get(`/${id}/`);
