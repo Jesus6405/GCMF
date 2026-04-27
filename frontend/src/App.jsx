@@ -7,6 +7,7 @@ import { IncidentsPage } from './pages/IncidentsPage';
 import { IncidentsFormPage } from './pages/IncidentsFormPage';
 import { MaintenanceOrdersPage } from './pages/MaintenanceOrdersPage';
 import { MaintenanceOrdersFormPage } from './pages/MaintenanceOrdersFormPage';
+import { NotificationsPage } from './pages/NotificationsPage';
 import { Navigation } from './components/Navigation';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -60,6 +61,7 @@ function App() {
           {/* Dashboard para todos */}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/" element={<Navigate to="/dashboard" />} />
+          <Route path="/notifications" element={<NotificationsPage />} />
 
           {/* Rutas para Conductores */}
           <Route path="/odometerLog" element={<OdometerLogsPage />} />
