@@ -43,7 +43,7 @@ class MaintenanceOrderViewSet(viewsets.ModelViewSet):
             return obj.correctivemaintenanceorder
         return obj
       
-     def get_serializer_class(self):
+    def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             # 1. Buscamos el tipo en los datos enviados
             order_type = self.request.data.get('order_type')
