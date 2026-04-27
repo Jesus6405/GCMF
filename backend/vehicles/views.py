@@ -3,14 +3,14 @@ from rest_framework import viewsets
 from .serializer import (
     VehicleSerializer, OdometerLogSerializer, IncidentSerializer,
     MaintenanceOrderSerializer, PreventiveMaintenanceOrderSerializer, CorrectiveMaintenanceOrderSerializer,
-    NotificationSerializer, MileageNotificationSerializer
+    NotificationSerializer, MileageNotificationSerializer, DocumentSerializer
 )
 from .models import (
     Vehicle, 
     OdometerLog, 
     Incident, 
     MaintenanceOrder, PreventiveMaintenanceOrder, CorrectiveMaintenanceOrder,
-    Notification, MileageNotification
+    Notification, MileageNotification, Document
 )
 
 # Create your views here.
@@ -27,16 +27,40 @@ class IncidentViewSet(viewsets.ModelViewSet):
     serializer_class = IncidentSerializer
 
 class MaintenanceOrderViewSet(viewsets.ModelViewSet):
-    queryset = MaintenanceOrder.objects.all()
-    serializer_class = MaintenanceOrderSerializer
+    queryset = MaintenanceOrder.objects.all().select_related(
+        'preventivemaintenanceorder', 
+        'correctivemaintenanceorder'
+    )
 
-class PreventiveMaintenanceOrderViewSet(viewsets.ModelViewSet):
-    queryset = PreventiveMaintenanceOrder.objects.all()
-    serializer_class = PreventiveMaintenanceOrderSerializer
+    def get_object(self):
+        # Obtenemos la instancia base
+        obj = super().get_object()
+        
+        # "Downcasting" manual: si es preventiva, devolvemos la instancia de la hija
+        if obj.order_type == 'PREVENTIVE' and hasattr(obj, 'preventivemaintenanceorder'):
+            return obj.preventivemaintenanceorder
+        if obj.order_type == 'CORRECTIVE' and hasattr(obj, 'correctivemaintenanceorder'):
+            return obj.correctivemaintenanceorder
+        return obj
+      
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            # 1. Buscamos el tipo en los datos enviados
+            order_type = self.request.data.get('order_type')
+            
+            # 2. Si no viene en los datos (ej: un PATCH parcial), lo sacamos del objeto
+            if not order_type and self.detail:
+                order_type = self.get_object().order_type
+            if order_type == 'PREVENTIVE':
+                return PreventiveMaintenanceOrderSerializer
+            elif order_type == 'CORRECTIVE':
+                return CorrectiveMaintenanceOrderSerializer
+                
+        return MaintenanceOrderSerializer
 
-class CorrectiveMaintenanceOrderViewSet(viewsets.ModelViewSet):
-    queryset = CorrectiveMaintenanceOrder.objects.all()
-    serializer_class = CorrectiveMaintenanceOrderSerializer
+class DocumentViewSet(viewsets.ModelViewSet):
+    queryset = Document.objects.all()
+    serializer_class = DocumentSerializer
 
 class NotificationViewSet(viewsets.ModelViewSet):
     queryset = Notification.objects.all()

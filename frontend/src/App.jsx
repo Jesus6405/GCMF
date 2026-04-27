@@ -8,6 +8,8 @@ import { IncidentsFormPage } from './pages/IncidentsFormPage';
 import { MaintenanceOrdersPage } from './pages/MaintenanceOrdersPage';
 import { MaintenanceOrdersFormPage } from './pages/MaintenanceOrdersFormPage';
 import { NotificationsPage } from './pages/NotificationsPage';
+import { DocumentsPage } from './pages/DocumentsPage';
+import { DocumentsFormPage } from './pages/DocumentFormPage';
 import { Navigation } from './components/Navigation';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -82,6 +84,9 @@ function App() {
               <Route path="/maintenanceOrders" element={<MaintenanceOrdersPage />} />
               <Route path="/maintenanceOrders-create" element={<MaintenanceOrdersFormPage />} />
               <Route path="/maintenanceOrders/:id" element={<MaintenanceOrdersFormPage />} />
+              <Route path="/documents" element={<DocumentsPage />} />
+              <Route path="/documents-create" element={<DocumentsFormPage />} />
+              <Route path="/documents/:id_policy" element={<DocumentsFormPage />} />
             </Route>
           
         </Route>

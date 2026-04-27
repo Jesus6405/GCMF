@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const API = axios.create({
-   // CORRECTO (asumiendo que en tu urls.py principal usas 'vehicles/')
     baseURL: 'http://localhost:8000/vehicles/api/v1/odometer/'
 });
 
