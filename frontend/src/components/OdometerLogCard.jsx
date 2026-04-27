@@ -8,7 +8,6 @@ export function OdometerLogCard({ odLog, onDelete }) {
 
     return (
         <tr className="table-row">
-            {/* Asegúrate de que todas tengan la "L" mayúscula: odLog */}
             <td className="font-bold">{odLog.id}</td>
             <td>{odLog.km_reading} km</td>
             <td>{new Date(odLog.recorded_at).toLocaleDateString()}</td>

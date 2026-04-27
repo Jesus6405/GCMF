@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (
     Vehicle, OdometerLog, Incident, 
-    MaintenanceOrder, PreventiveMaintenanceOrder, CorrectiveMaintenanceOrder
+    MaintenanceOrder, PreventiveMaintenanceOrder, CorrectiveMaintenanceOrder, Document
 )
 
 class VehicleSerializer(serializers.ModelSerializer):
@@ -41,8 +41,6 @@ class CorrectiveMaintenanceOrderSerializer(serializers.ModelSerializer):
         model = CorrectiveMaintenanceOrder
         fields = '__all__'
 
-# serializer.py
-
 class MaintenanceOrderSerializer(serializers.ModelSerializer):
     # Añadimos un campo para ver el nombre legible del tipo si queremos
     order_type_display = serializers.CharField(source='get_order_type_display', read_only=True)
@@ -59,4 +57,9 @@ class MaintenanceOrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MaintenanceOrder
+        fields = '__all__'
+
+class DocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Document
         fields = '__all__'

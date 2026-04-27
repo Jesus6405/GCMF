@@ -4,8 +4,11 @@ from .views import (
     VehicleViewSet, OdometerViewSet, IncidentViewSet, 
     MaintenanceOrderViewSet, 
     PreventiveMaintenanceOrderViewSet, 
-    CorrectiveMaintenanceOrderViewSet
+    CorrectiveMaintenanceOrderViewSet,
+    DocumentViewSet
 )
+from django.conf import settings 
+from django.conf.urls.static import static
 
 router = routers.DefaultRouter()
 router.register(r'vehicles', VehicleViewSet, 'vehicles')
@@ -14,7 +17,11 @@ router.register(r'incidents', IncidentViewSet, 'incidents')
 router.register(r'maintenanceOrders', MaintenanceOrderViewSet, 'maintenanceOrders')
 router.register(r'preventiveMaintenance', PreventiveMaintenanceOrderViewSet, 'preventiveMaintenance')
 router.register(r'correctiveMaintenance', CorrectiveMaintenanceOrderViewSet, 'correctiveMaintenance')
+router.register(r'documents', DocumentViewSet, 'documents')
 
 urlpatterns = [
     path('api/v1/', include(router.urls))
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
