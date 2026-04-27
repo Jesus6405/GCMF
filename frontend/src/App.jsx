@@ -63,27 +63,32 @@ function App() {
           {/* Dashboard para todos */}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/" element={<Navigate to="/dashboard" />} />
-          <Route path="/notifications" element={<NotificationsPage />} />
+      
+          {/*--- NIVEL 2: Rutas para conductores y mecánicos --- */}
+            <Route element={<ProtectedRoute allowedRoles={['CONDUCTOR', 'GERENTE_FLOTA', 'ADMINISTRADOR_OPERATIVO']}/>}>
+              <Route path="/incidents-create" element={<IncidentsFormPage />} />
+              <Route path="/incidents" element={<IncidentsPage />} />
+              <Route path="/incidents/:id" element={<IncidentsFormPage />} />
+              <Route path="/odometerLog" element={<OdometerLogsPage />} />
+              <Route path="/odometerLog-create" element={<OdometerLogsFormPage />} />
+              <Route path="/odometerLog/:id" element={<OdometerLogsFormPage />} />
+            </Route>
 
-          {/* Rutas para Conductores */}
-          <Route path="/odometerLog" element={<OdometerLogsPage />} />
-          <Route path="/odometerLog-create" element={<OdometerLogsFormPage />} />
-          <Route path="/odometerLog/:id" element={<OdometerLogsFormPage />} />
+            <Route element={<ProtectedRoute allowedRoles={['MECANICO', 'GERENTE_FLOTA', 'ADMINISTRADOR_OPERATIVO']}/>}>
+              <Route path="/maintenanceOrders" element={<MaintenanceOrdersPage />} />
+              <Route path="/maintenanceOrders/:id" element={<MaintenanceOrdersFormPage />} />
+            </Route>
 
-            {/* --- NIVEL 2: SOLO STAFF (Admin y Gerente) --- */}
+            {/* --- NIVEL 3: SOLO STAFF (Admin y Gerente) --- */}
             <Route element={<ProtectedRoute allowedRoles={['GERENTE_FLOTA', 'ADMINISTRADOR_OPERATIVO']}/>}>
+              <Route path="/notifications" element={<NotificationsPage />} />
               <Route path="/users" element={<UsersPage />} />
               <Route path="/create-user" element={<UsersFormPage />} />
               <Route path="/edit-user/:id" element={<UsersFormPage />} />
               <Route path="/vehicles" element={<VehiclesPage />} />
               <Route path="/vehicles-create" element={<VehiclesFormPage />} />
               <Route path="/vehicles/:placa" element={<VehiclesFormPage />} />
-              <Route path="/incidents" element={<IncidentsPage />} />
-              <Route path="/incidents-create" element={<IncidentsFormPage />} />
-              <Route path="/incidents/:id" element={<IncidentsFormPage />} />
-              <Route path="/maintenanceOrders" element={<MaintenanceOrdersPage />} />
               <Route path="/maintenanceOrders-create" element={<MaintenanceOrdersFormPage />} />
-              <Route path="/maintenanceOrders/:id" element={<MaintenanceOrdersFormPage />} />
               <Route path="/documents" element={<DocumentsPage />} />
               <Route path="/documents-create" element={<DocumentsFormPage />} />
               <Route path="/documents/:id_policy" element={<DocumentsFormPage />} />

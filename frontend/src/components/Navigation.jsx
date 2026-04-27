@@ -22,9 +22,11 @@ export function Navigation({ isOpen, closeMenu }) {
                     <p>Gestión de Flotas</p>
                 </div>
                 {/* <NotificationDropdown /> */}
-                <li>
-                    <Link to="/notifications" className="menu-link" onClick={closeMenu}>🔔</Link>
-                </li>
+                {['GERENTE_FLOTA', 'ADMINISTRADOR_OPERATIVO'].includes(user?.rol) && (
+                    <li>
+                        <Link to="/notifications" className="menu-link" onClick={closeMenu}>🔔</Link>
+                    </li>
+                )}
             </div>
             <ul className="sidebar-menu">
                 <li className="menu-section">Gestión de Activos</li>
@@ -45,6 +47,10 @@ export function Navigation({ isOpen, closeMenu }) {
 
                     <li>
                         <Link to="/vehicles-create" className="menu-link" onClick={closeMenu}>Registrar Vehículo</Link>
+                    </li>
+
+                    <li>
+                        <Link to="/incidents" className="menu-link" onClick={closeMenu}>Incidentes</Link>
                     </li>
 
                     <li>
@@ -77,6 +83,21 @@ export function Navigation({ isOpen, closeMenu }) {
                     </li>
                     <li>
                         <Link to="/odometerLog-create" className="menu-link">Registrar Kilometraje</Link>
+                    </li>
+                    <li>
+                        <Link to="/incidents" className="menu-link" onClick={closeMenu}>Incidentes</Link>
+                    </li>
+                    <li>
+                        <Link to="/incidents-create" className="menu-link" onClick={closeMenu}>Registrar Incidente</Link>
+                    </li>
+                    </>
+                )}
+
+                {/* Los mecanicos pueden ver y editar las ordenes de mantenimiento, pero no pueden crearlas */}
+                {user?.rol === 'MECANICO' && (
+                    <>
+                    <li>
+                        <Link to="/maintenanceOrders" className="menu-link" onClick={closeMenu}>Órdenes de Mantenimiento</Link>
                     </li>
                     </>
                 )}

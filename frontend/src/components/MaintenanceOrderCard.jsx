@@ -1,7 +1,10 @@
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import AuthContext from '../context/AuthContext';
 
 export function MaintenanceOrderCard({ maintenanceOrder, onDelete }) {
     const navigate = useNavigate();
+    const { user } = useContext(AuthContext); // Para saber quién es el que está mirando
 
     // Determinamos si es preventivo o correctivo para el estilo
     const isCorrective = maintenanceOrder.order_type === "CORRECTIVE"; 
@@ -37,12 +40,15 @@ export function MaintenanceOrderCard({ maintenanceOrder, onDelete }) {
                     >
                         Detalle
                     </button>
-                    <button 
+                    {/* Renderizado condicional: Solo el Gerente y el Administrador pueden borrar */}
+                    {(user.rol === 'GERENTE_FLOTA' || user.rol === 'ADMINISTRADOR_OPERATIVO') && (
+                        <button 
                         className="btn btn-delete"
                         onClick={() => onDelete(maintenanceOrder.id)}
-                    >
+                        >
                         Eliminar
-                    </button>
+                        </button>
+                    )}
                 </div>
             </td>
         </tr>

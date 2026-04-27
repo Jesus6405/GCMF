@@ -1,7 +1,10 @@
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import AuthContext from '../context/AuthContext';
 
 export function IncidentCard({ incident, onDelete }) {
     const navigate = useNavigate();
+    const { user } = useContext(AuthContext); // Para saber quién es el que está mirando
 
     // Colores según el nivel de urgencia 
     const urgencyStyles = {
@@ -29,9 +32,12 @@ export function IncidentCard({ incident, onDelete }) {
                 <button className="btn btn-edit" onClick={() => navigate(`/incidents/${incident.id}`)}>
                     Ver Detalle
                 </button>
-                <button className="btn btn-delete" onClick={() => onDelete(incident.id)}>
-                    Eliminar
-                </button>
+                {/* Renderizado condicional: Solo el Gerente y el Administrador pueden borrar */}
+                {(user.rol === 'GERENTE_FLOTA' || user.rol === 'ADMINISTRADOR_OPERATIVO') && (
+                    <button className="btn btn-delete" onClick={() => onDelete(incident.id)}>
+                        Eliminar
+                    </button>
+                )}
             </td>
         </tr>
     );
