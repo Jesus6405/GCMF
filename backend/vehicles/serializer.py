@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (
     Vehicle, OdometerLog, Incident, 
-    MaintenanceOrder, PreventiveMaintenanceOrder, CorrectiveMaintenanceOrder
+    MaintenanceOrder, PreventiveMaintenanceOrder, CorrectiveMaintenanceOrder, Document
 )
 
 class VehicleSerializer(serializers.ModelSerializer):
@@ -76,4 +76,10 @@ class MaintenanceOrderSerializer(serializers.ModelSerializer):
             return PreventiveMaintenanceOrderSerializer(instance.preventivemaintenanceorder, context=self.context).data
         if instance.order_type == 'CORRECTIVE' and hasattr(instance, 'correctivemaintenanceorder'):
             return CorrectiveMaintenanceOrderSerializer(instance.correctivemaintenanceorder, context=self.context).data
+        
         return super().to_representation(instance)
+
+class DocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Document
+        fields = '__all__'

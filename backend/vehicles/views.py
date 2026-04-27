@@ -2,11 +2,12 @@
 from rest_framework import viewsets
 from .serializer import (
     VehicleSerializer, OdometerLogSerializer, IncidentSerializer,
-    MaintenanceOrderSerializer, PreventiveMaintenanceOrderSerializer, CorrectiveMaintenanceOrderSerializer
+    MaintenanceOrderSerializer, PreventiveMaintenanceOrderSerializer, CorrectiveMaintenanceOrderSerializer,
+    DocumentSerializer
 )
 from .models import (
     Vehicle, OdometerLog, Incident, 
-    MaintenanceOrder, PreventiveMaintenanceOrder, CorrectiveMaintenanceOrder
+    MaintenanceOrder, PreventiveMaintenanceOrder, CorrectiveMaintenanceOrder, Document
 )
 
 # Create your views here.
@@ -38,8 +39,8 @@ class MaintenanceOrderViewSet(viewsets.ModelViewSet):
         if obj.order_type == 'CORRECTIVE' and hasattr(obj, 'correctivemaintenanceorder'):
             return obj.correctivemaintenanceorder
         return obj
-
-    def get_serializer_class(self):
+      
+     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             # 1. Buscamos el tipo en los datos enviados
             order_type = self.request.data.get('order_type')
@@ -54,3 +55,7 @@ class MaintenanceOrderViewSet(viewsets.ModelViewSet):
                 return CorrectiveMaintenanceOrderSerializer
                 
         return MaintenanceOrderSerializer
+
+class DocumentViewSet(viewsets.ModelViewSet):
+    queryset = Document.objects.all()
+    serializer_class = DocumentSerializer

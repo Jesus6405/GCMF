@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import FileExtensionValidator #Para validar PDF
 
 # Create your models here.
 class Vehicle(models.Model):
@@ -210,3 +211,60 @@ class CorrectiveMaintenanceOrder(MaintenanceOrder):
         related_name='correction',
         help_text="Vinculada a la orden de mantenimiento correctiva"
     )
+
+class Document(models.Model):
+
+    # Clase para el tipo de documento
+    class DocumentType(models.TextChoices):
+        INSURANCE = 'Seguro', 'Seguro'
+        TECHNICAL_INSPECTION = 'Revision Tecnica', 'Revision Tecnica'
+        AUTHORIZATION = 'Autorizacion', 'Autorizacion'
+
+    id_policy = models.CharField(
+        max_length=50,
+        primary_key=True, 
+        unique=True,
+        help_text="Número de Póliza o Identificador único del documento"
+    )
+    # Llave Foránea conectada a la placa del vehículo
+    vehicle = models.ForeignKey(
+        Vehicle, 
+        on_delete=models.CASCADE, 
+        related_name='documents',
+        help_text="Vehículo asociado al documento"
+    )
+
+    #Tipo de documento
+    document_type = models.CharField(
+        max_length=30,
+        choices=DocumentType.choices,
+        default=DocumentType.INSURANCE
+    )
+    
+    # Fecha de registro del documento
+    date_init = models.DateField(verbose_name="fechaInicio")
+
+    # Fecha de vencimiento
+    date_end = models.DateField(verbose_name="fechaFin")
+
+    # Descripción del Documento
+    description = models.CharField(
+        null=True,
+        blank=True,
+        max_length=300
+    )
+
+    #Archivo PDF
+    document_file = models.FileField(
+        upload_to='documents/pdfs/', 
+        validators=[FileExtensionValidator(allowed_extensions=['pdf'])],
+        help_text="Soporte digital del documento (Solo formato PDF)",
+        null=True,
+        blank=True  
+    )
+
+    class Meta:
+        ordering = ['-date_init']
+
+    def __str__(self):
+        return f"{self.vehicle.placa} - Vence: {self.date_end}"
