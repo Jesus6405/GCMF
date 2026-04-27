@@ -16,13 +16,13 @@ export function DocumentCard({ doc, onDelete }) {
             <td className="actions-cell">
                 <button 
                     className="btn btn-edit" 
-                    onClick={() => navigate(`/document/${doc.id}`)}
+                    onClick={() => navigate(`/documents/${encodeURIComponent(doc.id_policy)}`)}
                 >
                     Editar
                 </button>
                 <button 
                     className="btn btn-delete"
-                    onClick={() => onDelete(doc.id)}
+                    onClick={() => onDelete(doc.id_policy)}
                 >
                     Eliminar
                 </button>
