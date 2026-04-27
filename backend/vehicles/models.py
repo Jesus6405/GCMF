@@ -295,4 +295,10 @@ class MileageNotification(Notification):
         help_text="Asociada a la orden de mantenimiento preventivo"
     )
     
-# class LegalNotification(Notification):
+class LegalNotification(Notification):
+    document = models.ForeignKey(
+        'Document', 
+        on_delete=models.CASCADE, 
+        related_name='legal_notifications',
+        help_text="Asociada al documento legal próximo a vencer"
+    )

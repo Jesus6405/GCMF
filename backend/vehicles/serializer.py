@@ -4,7 +4,7 @@ from .models import (
     OdometerLog, 
     Incident, 
     MaintenanceOrder, PreventiveMaintenanceOrder, CorrectiveMaintenanceOrder,
-    Notification, MileageNotification, Document
+    Notification, MileageNotification, Document, LegalNotification
 )
 
 class VehicleSerializer(serializers.ModelSerializer):
@@ -116,6 +116,14 @@ class MileageNotificationSerializer(serializers.ModelSerializer):
         model = MileageNotification
         fields = ['id', 'message', 'notif_type', 'is_read', 'created_at', 'vehicle_placa', 'service_type']
 
+class LegalNotificationSerializer(serializers.ModelSerializer):
+    vehicle_placa = serializers.ReadOnlyField(source='document.vehicle.placa')
+    document_type = serializers.ReadOnlyField(source='document.document_type')
+
+    class Meta:
+        model = LegalNotification
+        fields = ['id', 'message', 'notif_type', 'is_read', 'created_at', 'vehicle_placa', 'document_type']
+
 class NotificationSerializer(serializers.ModelSerializer):
     notif_type_display = serializers.CharField(source='get_notif_type_display', read_only=True)
 
@@ -123,6 +131,9 @@ class NotificationSerializer(serializers.ModelSerializer):
         if instance.notif_type == 'MILEAGE' and hasattr(instance, 'mileagenotification'):
             return MileageNotificationSerializer(instance.mileagenotification, context=self.context).data
         
+        elif instance.notif_type == 'LEGAL' and hasattr(instance, 'legalnotification'):
+            return LegalNotificationSerializer(instance.legalnotification, context=self.context).data
+
         return super().to_representation(instance)
     
     class Meta:
