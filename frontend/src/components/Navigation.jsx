@@ -21,7 +21,10 @@ export function Navigation({ isOpen, closeMenu }) {
                     <h1>GCMF</h1>
                     <p>Gestión de Flotas</p>
                 </div>
-                <NotificationDropdown />
+                {/* <NotificationDropdown /> */}
+                <li>
+                    <Link to="/notifications" className="menu-link" onClick={closeMenu}>🔔</Link>
+                </li>
             </div>
             <ul className="sidebar-menu">
                 <li className="menu-section">Gestión de Activos</li>

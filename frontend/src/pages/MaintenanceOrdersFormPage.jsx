@@ -80,21 +80,36 @@ export function MaintenanceOrdersFormPage() {
             return;
         }
 
-        const dataToSend = {
-            ...order,
+        // --- LIMPIEZA DE DATOS PARA LA API ---
+        const cleanedData = {
+            vehicle: order.vehicle,
+            start_date: order.start_date,
+            end_date: order.end_date,
+            total_cost: parseFloat(order.total_cost) || 0,
+            observations: order.observations,
             order_type: type === "preventive" ? "PREVENTIVE" : "CORRECTIVE"
         };
 
+        if (type === "preventive") {
+            // Aseguramos que sea número y no enviamos el incident
+            cleanedData.scheduled_km = parseFloat(order.scheduled_km) || 0;
+            cleanedData.service_type = order.service_type;
+        } else {
+            // Enviamos el incident y eliminamos campos preventivos
+            cleanedData.incident = order.incident || null;
+        }
+
         try {
             if (id) {
-                await updateMaintenanceOrder(id, dataToSend);
+                await updateMaintenanceOrder(id, cleanedData);
             } else {
-                await createMaintenanceOrder(dataToSend);
+                // El backend ya usa el mismo endpoint para ambos a través del serializer inteligente
+                await createPreventiveOrder(cleanedData); 
             }
             navigate("/maintenanceOrders");
         } catch (err) { 
-            console.error(err);
-            alert("Error al guardar la orden."); 
+            console.error("Error detallado de la API:", err.response?.data);
+            alert("Error al guardar la orden. Verifique la consola para más detalles."); 
         }
     };
 

@@ -82,15 +82,39 @@ class MaintenanceOrderSerializer(serializers.ModelSerializer):
         
         return super().to_representation(instance)
 
+    def create(self, validated_data):
+        """Lógica de creación: Decide en qué tabla hija insertar los datos"""
+        order_type = validated_data.get('order_type')
+
+        if order_type == 'PREVENTIVE':
+            # Extraemos los campos específicos antes de crear
+            child_data = {
+                'scheduled_km': validated_data.pop('scheduled_km', 0),
+                'service_type': validated_data.pop('service_type', '')
+            }
+            # Creamos directamente en la tabla hija
+            return PreventiveMaintenanceOrder.objects.create(**validated_data, **child_data)
+
+        elif order_type == 'CORRECTIVE':
+            child_data = {
+                'incident': validated_data.pop('incident', None)
+            }
+            return CorrectiveMaintenanceOrder.objects.create(**validated_data, **child_data)
+
+        return super().create(validated_data)
+      
 class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
         fields = '__all__'
 
 class MileageNotificationSerializer(serializers.ModelSerializer):
+    vehicle_placa = serializers.ReadOnlyField(source='preventive_order.vehicle.placa')
+    service_type = serializers.ReadOnlyField(source='preventive_order.service_type')
+
     class Meta:
         model = MileageNotification
-        fields = '__all__'
+        fields = ['id', 'message', 'notif_type', 'is_read', 'created_at', 'vehicle_placa', 'service_type']
 
 class NotificationSerializer(serializers.ModelSerializer):
     notif_type_display = serializers.CharField(source='get_notif_type_display', read_only=True)
@@ -100,3 +124,7 @@ class NotificationSerializer(serializers.ModelSerializer):
             return MileageNotificationSerializer(instance.mileagenotification, context=self.context).data
         
         return super().to_representation(instance)
+    
+    class Meta:
+        model = Notification
+        fields = '__all__'
