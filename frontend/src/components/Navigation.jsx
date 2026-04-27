@@ -31,20 +31,37 @@ export function Navigation({ isOpen, closeMenu }) {
                     <li>
                         <Link to="/users" className="menu-link" onClick={closeMenu}>Gestión de Personal</Link>
                     </li>
+                    
                     <li>
                         <Link to="/create-user" className="menu-link" onClick={closeMenu}>Registrar Usuario</Link>
                     </li>
+
+                    <li>
+                        <Link to="/vehicles" className="menu-link" onClick={closeMenu}>Vehículos</Link>
+                    </li>
+
                     <li>
                         <Link to="/vehicles-create" className="menu-link" onClick={closeMenu}>Registrar Vehículo</Link>
                     </li>
+
                     <li>
                         <Link to="/incidents-create" className="menu-link" onClick={closeMenu}>Registrar Incidente</Link>
                     </li>
+
                     <li>
                         <Link to="/maintenanceOrders" className="menu-link" onClick={closeMenu}>Órdenes de Mantenimiento</Link>
                     </li>
+                    
                     <li>
                         <Link to="/maintenanceOrders-create" className="menu-link" onClick={closeMenu}>Registrar Órden de Mantenimiento</Link>
+                    </li>
+
+                     <li>
+                        <Link to="/documents" className="menu-link" onClick={closeMenu}>Documentos</Link>
+                    </li>
+
+                     <li>
+                        <Link to="/documents-create" className="menu-link" onClick={closeMenu}>Registrar Documento</Link>
                     </li>
                     </>
                 )}

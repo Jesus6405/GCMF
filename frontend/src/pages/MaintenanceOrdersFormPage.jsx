@@ -3,8 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getAllVehicles } from "../api/vehicles.api";
 import { getAllIncidents } from "../api/incidents.api";
 import { 
-    createPreventiveOrder, 
-    createCorrectiveOrder, 
+    createMaintenanceOrder, 
     getMaintenanceOrder, 
     updateMaintenanceOrder 
 } from "../api/maintenanceOrders.api";
@@ -21,12 +20,17 @@ export function MaintenanceOrdersFormPage() {
         vehicle: "", 
         start_date: "", 
         end_date: "", 
-        observations: "", 
         total_cost: 0,
         scheduled_km: "", 
         service_type: "", 
         incident: "",
-        order_type: "PREVENTIVE"
+        order_type: "PREVENTIVE",
+        // Nuevos atributos añadidos según el modelo
+        status: "PLANNING",
+        estimated_budget: 0,
+        man_hours: 0,
+        mechanic_observations: "",
+        final_odometer: ""
     });
 
     useEffect(() => {
@@ -37,9 +41,16 @@ export function MaintenanceOrdersFormPage() {
             
             if (id) {
                 const res = await getMaintenanceOrder(id);
-                setOrder(res.data);
-                const currentType = res.data.order_type === "CORRECTIVE" ? "corrective" : "preventive";
-                setType(currentType);
+                const data = {
+                    ...res.data,
+                    // Si el backend devuelve el objeto incidente, extraemos solo el ID para el select
+                    incident: res.data.incident?.id || res.data.incident || "",
+                    end_date: res.data.end_date || "",
+                    scheduled_km: res.data.scheduled_km || "",
+                    service_type: res.data.service_type || ""
+            };
+            setOrder(data);
+            setType(res.data.order_type === "CORRECTIVE" ? "corrective" : "preventive");
             }
         }
         load();
@@ -62,7 +73,9 @@ export function MaintenanceOrdersFormPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (new Date(order.end_date) <= new Date(order.start_date)) {
+        
+        // Modificación: Solo validamos la fecha de fin si existe (ya que en Planificación puede estar vacía)
+        if (order.end_date && new Date(order.end_date) <= new Date(order.start_date)) {
             alert("Error: La fecha de finalización debe ser posterior a la de inicio.");
             return;
         }
@@ -76,9 +89,7 @@ export function MaintenanceOrdersFormPage() {
             if (id) {
                 await updateMaintenanceOrder(id, dataToSend);
             } else {
-                type === "preventive" 
-                    ? await createPreventiveOrder(dataToSend) 
-                    : await createCorrectiveOrder(dataToSend);
+                await createMaintenanceOrder(dataToSend);
             }
             navigate("/maintenanceOrders");
         } catch (err) { 
@@ -96,14 +107,15 @@ export function MaintenanceOrdersFormPage() {
                 </div>
             </header>
 
-            {/* Eliminamos el estilo inline 'display: grid' para que use la clase del index.css */}
             <form onSubmit={handleSubmit} className="elaborated-form">
                 
                 <div className="form-main-content">
+                    
+                    {/* FASE 1: PLANIFICACIÓN */}
                     <section className="form-section-card">
                         <div className="section-title">
-                            <span className="icon">#</span>
-                            <h3>Datos de la Intervención</h3>
+                            <span className="icon">📋</span>
+                            <h3>Fase 1: Planificación General</h3>
                         </div>
                         
                         {!id && (
@@ -127,44 +139,58 @@ export function MaintenanceOrdersFormPage() {
                             </div>
                         )}
 
-                        <div className="grid-form-fields">
+                        <div className="grid-form-fields dual-column">
                             <div className="form-group">
                                 <label>Unidad (Vehículo) *</label>
                                 <select 
                                     value={order.vehicle} 
                                     onChange={e => setOrder({...order, vehicle: e.target.value})} 
                                     required
-                                    disabled={type === "corrective"}
+                                    disabled={type === "corrective" || !!id}
                                 >
                                     <option value="">Seleccione placa...</option>
                                     {vehicles.map(v => <option key={v.placa} value={v.placa}>{v.placa} - {v.brand}</option>)}
                                 </select>
                             </div>
                             
-                            {/* Usamos la clase dual-column que ya tiene media query en index.css */}
-                            <div className="grid-form-fields dual-column" style={{ marginTop: "15px" }}>
-                                <div className="form-group">
-                                    <label>Fecha de Inicio *</label>
-                                    <input 
-                                        type="datetime-local" 
-                                        value={order.start_date.substring(0,16)} 
-                                        onChange={e => setOrder({...order, start_date: e.target.value})} 
-                                        required 
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Fecha de Finalización *</label>
-                                    <input 
-                                        type="datetime-local" 
-                                        value={order.end_date?.substring(0,16)} 
-                                        onChange={e => setOrder({...order, end_date: e.target.value})} 
-                                        required 
-                                    />
-                                </div>
+                            <div className="form-group">
+                                <label>Estado Actual *</label>
+                                <select 
+                                    value={order.status} 
+                                    onChange={e => setOrder({...order, status: e.target.value})} 
+                                    required
+                                >
+                                    <option value="PLANNING">Planificación</option>
+                                    <option value="EXECUTION">En Ejecución</option>
+                                    <option value="CLOSURE">Cierre / Completada</option>
+                                    <option value="CANCELLED">Cancelada</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="grid-form-fields dual-column" style={{ marginTop: "15px" }}>
+                            <div className="form-group">
+                                <label>Fecha de Inicio *</label>
+                                <input 
+                                    type="datetime-local" 
+                                    value={order.start_date.substring(0,16)} 
+                                    onChange={e => setOrder({...order, start_date: e.target.value})} 
+                                    required 
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Presupuesto Estimado ($)</label>
+                                <input 
+                                    type="number" 
+                                    step="0.01"
+                                    value={order.estimated_budget} 
+                                    onChange={e => setOrder({...order, estimated_budget: parseFloat(e.target.value) || 0})} 
+                                />
                             </div>
                         </div>
                     </section>
 
+                    {/* SECCIÓN DINÁMICA: PREVENTIVO / CORRECTIVO */}
                     <section className="form-section-card">
                         <div className="section-title">
                             <span className="icon">⚙️</span>
@@ -211,37 +237,81 @@ export function MaintenanceOrdersFormPage() {
                             </div>
                         )}
                     </section>
+
+                    {/* FASE 2: EJECUCIÓN TÉCNICA */}
+                    {order.status !== 'PLANNING' && (
+                        <section className="form-section-card">
+                            <div className="section-title">
+                                <span className="icon">🔧</span>
+                                <h3>Fase 2: Ejecución Técnica</h3>
+                            </div>
+                            <div className="form-group" style={{ marginBottom: "15px" }}>
+                                <label>Horas Hombre Invertidas</label>
+                                <input 
+                                    type="number" 
+                                    step="0.5"
+                                    value={order.man_hours} 
+                                    onChange={e => setOrder({...order, man_hours: parseFloat(e.target.value) || 0})} 
+                                    placeholder="Ej: 4.5"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Observaciones del Mecánico</label>
+                                <textarea 
+                                    rows="4" 
+                                    className="login-input"
+                                    value={order.mechanic_observations} 
+                                    onChange={e => setOrder({...order, mechanic_observations: e.target.value})} 
+                                    placeholder="Detalles de la reparación, repuestos utilizados, hallazgos..."
+                                />
+                            </div>
+                        </section>
+                    )}
                 </div>
 
+                {/* BARRA LATERAL: FASE 3 CIERRE Y FINANZAS */}
                 <aside className="form-sidebar-content">
                     <div className="side-card cost-card">
                         <div className="section-title">
                             <span className="icon">💰</span>
-                            <h3>Resumen Financiero</h3>
+                            <h3>Cierre y Liquidación</h3>
                         </div>
-                        <div className="form-group">
-                            <label>Costo Total ($)</label>
+                        
+                        <div className="form-group" style={{ marginBottom: "15px" }}>
+                            <label>Odómetro de Cierre (Km)</label>
                             <input 
                                 type="number" 
-                                className="login-input" /* Reutilizamos clase de input con ancho completo */
-                                style={{ fontSize: '1.25rem', fontWeight: '700', textAlign: 'right' }}
-                                value={order.total_cost} 
-                                onChange={e => setOrder({...order, total_cost: e.target.value})} 
+                                className="login-input"
+                                value={order.final_odometer} 
+                                onChange={e => setOrder({...order, final_odometer: e.target.value})} 
+                                placeholder="Km al terminar"
                             />
                         </div>
-                        <div className="form-group">
-                            <label>Observaciones</label>
-                            <textarea 
-                                rows="5" 
+
+                        <div className="form-group" style={{ marginBottom: "15px" }}>
+                            <label>Fecha de Finalización</label>
+                            <input 
+                                type="datetime-local" 
                                 className="login-input"
-                                value={order.observations} 
-                                onChange={e => setOrder({...order, observations: e.target.value})} 
+                                value={order.end_date ? order.end_date.substring(0,16) : ""} 
+                                onChange={e => setOrder({...order, end_date: e.target.value})} 
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Costo Total Real ($)</label>
+                            <input 
+                                type="number" 
+                                className="login-input" 
+                                style={{ fontSize: '1.25rem', fontWeight: '700', textAlign: 'right' }}
+                                value={order.total_cost} 
+                                onChange={e => setOrder({...order, total_cost: parseFloat(e.target.value) || 0})} 
                             />
                         </div>
                     </div>
 
-                    <button type="submit" className="btn btn-save">
-                        {id ? 'ACTUALIZAR ORDEN' : 'FINALIZAR REGISTRO'}
+                    <button type="submit" className="btn btn-save" style={{ width: '100%' }}>
+                        {id ? 'ACTUALIZAR ORDEN' : 'INICIAR ORDEN'}
                     </button>
                 </aside>
             </form>
