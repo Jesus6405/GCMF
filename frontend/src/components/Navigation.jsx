@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import AuthContext from '../context/AuthContext';
+import { NotificationDropdown } from "./NotificationDropdown";
 
 export function Navigation({ isOpen, closeMenu }) {
 
@@ -20,6 +21,7 @@ export function Navigation({ isOpen, closeMenu }) {
                     <h1>GCMF</h1>
                     <p>Gestión de Flotas</p>
                 </div>
+                <NotificationDropdown />
             </div>
             <ul className="sidebar-menu">
                 <li className="menu-section">Gestión de Activos</li>

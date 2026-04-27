@@ -1,8 +1,12 @@
 from django.urls import path, include
 from rest_framework import routers
 from .views import (
-    VehicleViewSet, OdometerViewSet, IncidentViewSet, 
-    MaintenanceOrderViewSet, 
+    VehicleViewSet, 
+    OdometerViewSet, 
+    IncidentViewSet, 
+    MaintenanceOrderViewSet,
+    NotificationViewSet, 
+    MileageNotificationViewSet, 
     DocumentViewSet
 )
 from django.conf import settings 
@@ -13,6 +17,8 @@ router.register(r'vehicles', VehicleViewSet, 'vehicles')
 router.register(r'odometer', OdometerViewSet, 'odometer')
 router.register(r'incidents', IncidentViewSet, 'incidents')
 router.register(r'maintenanceOrders', MaintenanceOrderViewSet, 'maintenanceOrders')
+router.register(r'notifications', NotificationViewSet, 'notifications')
+router.register(r'mileageNotifications', MileageNotificationViewSet, 'mileageNotifications')
 router.register(r'documents', DocumentViewSet, 'documents')
 
 urlpatterns = [

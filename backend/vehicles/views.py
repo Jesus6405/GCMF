@@ -3,11 +3,14 @@ from rest_framework import viewsets
 from .serializer import (
     VehicleSerializer, OdometerLogSerializer, IncidentSerializer,
     MaintenanceOrderSerializer, PreventiveMaintenanceOrderSerializer, CorrectiveMaintenanceOrderSerializer,
-    DocumentSerializer
+    NotificationSerializer, MileageNotificationSerializer, DocumentSerializer
 )
 from .models import (
-    Vehicle, OdometerLog, Incident, 
-    MaintenanceOrder, PreventiveMaintenanceOrder, CorrectiveMaintenanceOrder, Document
+    Vehicle, 
+    OdometerLog, 
+    Incident, 
+    MaintenanceOrder, PreventiveMaintenanceOrder, CorrectiveMaintenanceOrder,
+    Notification, MileageNotification, Document
 )
 
 # Create your views here.
@@ -48,7 +51,6 @@ class MaintenanceOrderViewSet(viewsets.ModelViewSet):
             # 2. Si no viene en los datos (ej: un PATCH parcial), lo sacamos del objeto
             if not order_type and self.detail:
                 order_type = self.get_object().order_type
-
             if order_type == 'PREVENTIVE':
                 return PreventiveMaintenanceOrderSerializer
             elif order_type == 'CORRECTIVE':
@@ -59,3 +61,11 @@ class MaintenanceOrderViewSet(viewsets.ModelViewSet):
 class DocumentViewSet(viewsets.ModelViewSet):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
+
+class NotificationViewSet(viewsets.ModelViewSet):
+    queryset = Notification.objects.all()
+    serializer_class = NotificationSerializer
+
+class MileageNotificationViewSet(viewsets.ModelViewSet):
+    queryset = MileageNotification.objects.all()
+    serializer_class = MileageNotificationSerializer
