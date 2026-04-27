@@ -7,6 +7,7 @@ import {
     getMaintenanceOrder, 
     updateMaintenanceOrder 
 } from "../api/maintenanceOrders.api";
+import { getVehicle, updateVehicle } from "../api/vehicles.api";
 
 export function MaintenanceOrdersFormPage() {
     const { id } = useParams();
@@ -82,7 +83,11 @@ export function MaintenanceOrdersFormPage() {
 
         const dataToSend = {
             ...order,
-            order_type: type === "preventive" ? "PREVENTIVE" : "CORRECTIVE"
+            order_type: type === "preventive" ? "PREVENTIVE" : "CORRECTIVE",
+            end_date: order.end_date || null,
+            final_odometer: order.final_odometer === "" ? null : order.final_odometer,
+            mechanic_observations: order.mechanic_observations || null,
+            scheduled_km: order.scheduled_km === "" ? null : order.scheduled_km,
         };
 
         try {
@@ -91,10 +96,25 @@ export function MaintenanceOrdersFormPage() {
             } else {
                 await createMaintenanceOrder(dataToSend);
             }
+
+            if (order.final_odometer) {
+                //Actualizamos Automaticamente el kilometraje del vehiculo asociado
+                const res = await getVehicle(order.vehicle);
+                const vehicleData = res.data;
+                vehicleData.current_km = order.final_odometer;
+                await updateVehicle(order.vehicle, vehicleData);
+            }
+
             navigate("/maintenanceOrders");
-        } catch (err) { 
-            console.error(err);
-            alert("Error al guardar la orden."); 
+        } catch (error) { 
+            console.error("Error de la API:", error.response?.data || error.message);
+            let mensajeError = "No se pudo guardar la orden de mantenimiento.\n";
+            if (error.response?.data) {
+                for (const key in error.response.data) {
+                    mensajeError += `\n- ${key}: ${error.response.data[key]}`;
+                }
+            }
+            alert(mensajeError);
         }
     };
 
