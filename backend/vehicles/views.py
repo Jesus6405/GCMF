@@ -15,8 +15,15 @@ from .models import (
 
 # Create your views here.
 class VehicleViewSet(viewsets.ModelViewSet):
-    queryset = Vehicle.objects.all()
     serializer_class = VehicleSerializer
+
+    def get_queryset(self):
+        # Si la petición viene de la lista general, solo enviamos los activos
+        if self.action == 'list':
+            return Vehicle.objects.filter(is_active=True)
+        
+        # Para el historial de costos (HU-07) o detalles, permitimos ver inactivos
+        return Vehicle.objects.all()
 
 class OdometerViewSet(viewsets.ModelViewSet):
     queryset = OdometerLog.objects.all()
