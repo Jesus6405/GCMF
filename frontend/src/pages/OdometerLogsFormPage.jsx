@@ -1,34 +1,38 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getOdometerLog, createOdometerLog, updateOdometerLog } from "../api/odometerLog.api";
-import { getVehicle, updateVehicle } from "../api/vehicles.api";
+import { getVehicle, updateVehicle, getAllVehicles } from "../api/vehicles.api"; //[cite: 34, 35]
 
 const INITIAL_STATE = {
     km_reading: "",
-    vehicle: "", //placa
+    vehicle: "", 
     description: ""
 };
 
 export function OdometerLogsFormPage() {
     const [OdLog, setOdLog] = useState(INITIAL_STATE);
+    const [vehicles, setVehicles] = useState([]);
 
     const navigate = useNavigate();
     const params = useParams();
 
     useEffect(() => {
-        async function loadOdLog() {
-            if (params.id) {
-                try {
+        async function loadData() {
+            try {
+                const vRes = await getAllVehicles();
+                setVehicles(vRes.data);
+
+                if (params.id) {
                     const res = await getOdometerLog(params.id);
                     setOdLog(res.data);
-                } catch (error) {
-                    console.error("Error al cargar el log:", error);
+                } else {
+                    setOdLog(INITIAL_STATE);
                 }
-            } else {
-                setOdLog(INITIAL_STATE);
+            } catch (error) {
+                console.error("Error al cargar datos:", error);
             }
         }
-        loadOdLog();
+        loadData();
     }, [params.id]);
 
     const handleChange = (e) => {
@@ -42,29 +46,19 @@ export function OdometerLogsFormPage() {
         try {
             if (params.id) {
                 await updateOdometerLog(params.id, OdLog);
-
             } else {
                 await createOdometerLog(OdLog);
             }
             
-            //Actualizamos Automaticamente el kilometraje del vehiculo asociado
             const res = await getVehicle(OdLog.vehicle);
             const vehicleData = res.data;
             vehicleData.current_km = OdLog.km_reading;
             await updateVehicle(OdLog.vehicle, vehicleData);
 
-
-            // Asegúrate de que esta sea la ruta correcta a tu lista de logs
             navigate("/odometerLog");
         } catch (error) {
             console.error("Error de la API:", error.response?.data || error.message);
-            let mensajeError = "No se pudo guardar el Log.\n";
-            if (error.response?.data) {
-                for (const key in error.response.data) {
-                    mensajeError += `\n- ${key}: ${error.response.data[key]}`;
-                }
-            }
-            alert(mensajeError);
+            alert("No se pudo guardar el Log.");
         }
     };
 
@@ -72,9 +66,8 @@ export function OdometerLogsFormPage() {
         <div className="form-page-container">
             <header className="form-header">
                 <div className="header-info">
-                    <span className="breadcrumb">HU-05 · Operaciones Diarias</span>
+                    <span className="breadcrumb">HU-05 · Registro de Odómetro</span>
                     <h1>Registro de Odómetro</h1>
-                    <p>Actualización del log de kilometraje de las unidades.</p>
                 </div>
             </header>
 
@@ -86,32 +79,33 @@ export function OdometerLogsFormPage() {
                             <h3>Datos del Registro</h3>
                         </div>
                         <div className="grid-form-fields dual-column">
-                            {/* Ocultamos el input del ID si estamos creando uno nuevo. 
-                                Solo lo mostramos como informativo si estamos editando */}
                             {params.id && (
                                 <div className="form-group">
                                     <label>ID del Registro</label>
-                                    <input
-                                        type="text"
-                                        value={params.id}
-                                        disabled
-                                        style={{ backgroundColor: "#e2e8f0" }}
-                                    />
+                                    <input type="text" value={params.id} disabled style={{ backgroundColor: "#e2e8f0" }} />
                                 </div>
                             )}
 
                             <div className="form-group">
-                                <label>Placa del Vehículo <span className="required">*</span></label>
-                                <input
-                                    type="text" name="vehicle"
-                                    value={OdLog.vehicle} onChange={handleChange} required
-                                    disabled={params.id} // Por integridad, no deberías cambiar la placa de un log viejo
-                                />
+                                <label>Vehículo (Placa) <span className="required">*</span></label>
+                                <select 
+                                    name="vehicle"
+                                    value={OdLog.vehicle} 
+                                    onChange={handleChange} 
+                                    required
+                                    disabled={params.id} // Bloqueado en edición por integridad[cite: 35]
+                                >
+                                    <option value="">-- Seleccionar unidad --</option>
+                                    {vehicles.map(v => (
+                                        <option key={v.placa} value={v.placa}>
+                                            {v.placa} - {v.brand} {v.model}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
 
                             <div className="form-group">
-                                <label>Kilometraje <span className="required">*</span></label>
-                                {/* 3. CORRECCIÓN: type="number" */}
+                                <label>Kilometraje Actual <span className="required">*</span></label>
                                 <input
                                     type="number" name="km_reading"
                                     placeholder="Ej: 15000"
@@ -122,16 +116,13 @@ export function OdometerLogsFormPage() {
                     </section>
 
                     <section className="form-section-card">
-                        <div className="grid-form-fields">
-                            <div className="form-group full-width">
-                                <label>Descripción / Observaciones</label>
-                                {/* 4. CORRECCIÓN: type="text" en lugar de "number" */}
-                                <input
-                                    type="text" name="description"
-                                    placeholder="Escribe alguna novedad si la hay..."
-                                    value={OdLog.description} onChange={handleChange}
-                                />
-                            </div>
+                        <div className="form-group full-width">
+                            <label>Descripción / Observaciones</label>
+                            <input
+                                type="text" name="description"
+                                placeholder="Escribe alguna novedad si la hay..."
+                                value={OdLog.description} onChange={handleChange}
+                            />
                         </div>
                     </section>
 
