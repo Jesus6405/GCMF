@@ -7,7 +7,8 @@ from .views import (
     MaintenanceOrderViewSet,
     NotificationViewSet, 
     MileageNotificationViewSet, 
-    DocumentViewSet
+    DocumentViewSet,
+    dashboard_stats
 )
 from django.conf import settings 
 from django.conf.urls.static import static
@@ -22,7 +23,8 @@ router.register(r'mileageNotifications', MileageNotificationViewSet, 'mileageNot
 router.register(r'documents', DocumentViewSet, 'documents')
 
 urlpatterns = [
-    path('api/v1/', include(router.urls))
+    path('api/v1/', include(router.urls)),
+    path('dashboard/stats/', dashboard_stats, name='dashboard_stats')
 ]
 
 if settings.DEBUG:
