@@ -2,7 +2,8 @@
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.db.models import Count, Sum, Avg
+from django.db.models import Count, Sum, Avg, F, Value
+from django.db.models.functions import TruncMonth, Coalesce
 from .serializer import (
     VehicleSerializer, OdometerLogSerializer, IncidentSerializer,
     MaintenanceOrderSerializer, PreventiveMaintenanceOrderSerializer, CorrectiveMaintenanceOrderSerializer,
@@ -79,6 +80,13 @@ def dashboard_stats(request):
     total_vehicles = Vehicle.objects.count()
     vehicles_by_status = Vehicle.objects.values('operational_status').annotate(count=Count('operational_status'))
     
+    # Vehículos con TCO calculado
+    vehicles_with_tco = Vehicle.objects.annotate(
+        maintenance_cost=Coalesce(Sum('maintenances__total_cost'), 0.0)
+    ).annotate(
+        tco=F('maintenance_cost') * 1.2
+    )
+    
     total_incidents = Incident.objects.count()
     incidents_by_urgency = Incident.objects.values('urgency_level').annotate(count=Count('urgency_level'))
     incidents_by_status = Incident.objects.values('report_status').annotate(count=Count('report_status'))
@@ -88,8 +96,14 @@ def dashboard_stats(request):
     maintenance_by_status = MaintenanceOrder.objects.values('status').annotate(count=Count('status'))
     total_maintenance_cost = MaintenanceOrder.objects.aggregate(total=Sum('total_cost'))['total'] or 0
     
+    # Historial de costos de mantenimiento por mes
+    maintenance_costs_by_month = MaintenanceOrder.objects.filter(end_date__isnull=False).annotate(
+        month=TruncMonth('end_date')
+    ).values('month').annotate(total_cost=Sum('total_cost')).order_by('month')
+    
     total_odometer_logs = OdometerLog.objects.count()
     total_km = OdometerLog.objects.aggregate(total=Sum('km_reading'))['total'] or 0
+    total_vehicle_km = Vehicle.objects.aggregate(total=Sum('current_km'))['total'] or 0
     
     # Cálculo simplificado de TCO (Total Cost of Ownership)
     # Asumiendo que TCO incluye costos de mantenimiento + estimación de otros costos
@@ -103,7 +117,9 @@ def dashboard_stats(request):
     data = {
         'vehicles': {
             'total': total_vehicles,
-            'by_status': list(vehicles_by_status)
+            'by_status': list(vehicles_by_status),
+            'list': list(vehicles_with_tco.values('placa', 'operational_status', 'tco')),
+            'total_km': total_vehicle_km
         },
         'incidents': {
             'total': total_incidents,
@@ -114,7 +130,8 @@ def dashboard_stats(request):
             'total_orders': total_maintenance_orders,
             'by_type': list(maintenance_by_type),
             'by_status': list(maintenance_by_status),
-            'total_cost': total_maintenance_cost
+            'total_cost': total_maintenance_cost,
+            'costs_history': list(maintenance_costs_by_month)
         },
         'odometer': {
             'total_logs': total_odometer_logs,
