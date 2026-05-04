@@ -61,8 +61,19 @@ class Vehicle(models.Model):
         help_text="Last total recorded mileage"
     )
 
+    is_active = models.BooleanField(default=True, verbose_name="¿Está Activo?") 
+
+    def delete(self, *args, **kwargs):
+        """
+        Sobrescribimos el borrado físico por uno lógico.
+        Esto asegura que se mantenga la trazabilidad histórica (RNF-01).[cite: 25]
+        """
+        self.is_active = False
+        self.save()
+
     def __str__(self):
-        return f"{self.placa} - {self.brand} {self.model}"
+        status = "Activo" if self.is_active else "Inactivo"
+        return f"{self.placa} - {self.brand} {self.model} ({status})"
     
 class OdometerLog(models.Model):
     #Llave Foránea (Foreign Key) conectada a la placa del vehículo
