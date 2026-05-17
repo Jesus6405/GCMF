@@ -41,12 +41,12 @@ class Vehicle(models.Model):
     )
     
     # vehicle_photo: Multimedia (Image)
-    # vehicle_photo = models.ImageField(
-    #     upload_to='vehicles/', 
-    #     null=True, 
-    #     blank=True,
-    #     help_text="Physical image of the unit"
-    # )
+    vehicle_photo = models.ImageField(
+        upload_to='vehicles/', 
+        null=True, 
+        blank=True,
+        help_text="Physical image of the unit"
+    )
     
     # operational_status: Enum, changes based on incidents
     operational_status = models.CharField(

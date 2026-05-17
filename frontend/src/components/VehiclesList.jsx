@@ -56,6 +56,7 @@ export function VehiclesList() {
                 <table className="data-table">
                     <thead>
                         <tr>
+                            <th>Foto</th>
                             <th>Placa</th>
                             <th>Marca</th>
                             <th>Modelo</th>

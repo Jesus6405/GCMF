@@ -5,6 +5,19 @@ export function VehicleCard({ vehicle, onDelete }) {
 
     return (
         <tr className="table-row">
+            <td>
+                {vehicle.vehicle_photo ? (
+                    <img 
+                        src={vehicle.vehicle_photo} 
+                        alt={vehicle.placa} 
+                        style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #ddd' }} 
+                    />
+                ) : (
+                    <div style={{ width: '40px', height: '40px', backgroundColor: '#f0f0f0', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', border: '1px solid #ddd' }}>
+                        🚗
+                    </div>
+                )}
+            </td>
             <td className="font-bold">{vehicle.placa}</td>
             <td>{vehicle.brand}</td>
             <td>{vehicle.model}</td>

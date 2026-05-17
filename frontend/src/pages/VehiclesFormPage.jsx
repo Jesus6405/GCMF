@@ -21,7 +21,9 @@ export function VehiclesFormPage() {
         year: "",
         fuel_type: "Gasoline", 
         current_km: "",
-        operational_status: "Operational" 
+        operational_status: "Operational",
+        vehicle_photo: null,
+        is_active: true
     });
     
     const navigate = useNavigate();
@@ -44,18 +46,33 @@ export function VehiclesFormPage() {
     }, [params.placa]);
 
     const handleChange = (e) => {
-        const { name, value, type } = e.target;
-        const parsedValue = type === "number" ? (value === "" ? "" : Number(value)) : value;
-        setVehicle({ ...vehicle, [name]: parsedValue });
+        const { name, value, type, files } = e.target;
+        if (type === "file") {
+            setVehicle({ ...vehicle, [name]: files[0] });
+        } else {
+            const parsedValue = type === "number" ? (value === "" ? "" : Number(value)) : value;
+            setVehicle({ ...vehicle, [name]: parsedValue });
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            const formData = new FormData();
+            for (const key in vehicle) {
+                if (key === 'vehicle_photo') {
+                    if (vehicle[key] instanceof File) {
+                        formData.append(key, vehicle[key]);
+                    }
+                } else if (vehicle[key] !== null && vehicle[key] !== undefined) {
+                    formData.append(key, vehicle[key]);
+                }
+            }
+
             if (params.placa) {
-                await updateVehicle(params.placa, vehicle);
+                await updateVehicle(params.placa, formData);
             } else {
-                await createVehicle(vehicle);
+                await createVehicle(formData);
             }
             navigate("/vehicles");
         } catch (error) {
@@ -171,9 +188,27 @@ export function VehiclesFormPage() {
                             <span className="icon">📷</span>
                             <h3>Fotografía del Vehículo</h3>
                         </div>
-                        <div className="upload-box">
-                            <p>Subida de imágenes no disponible en esta fase.</p>
+                        <div className="upload-box" style={{ padding: '15px', textAlign: 'center' }}>
+                            {vehicle.vehicle_photo && (
+                                <div style={{ marginBottom: '15px' }}>
+                                    <img 
+                                        src={vehicle.vehicle_photo instanceof File ? URL.createObjectURL(vehicle.vehicle_photo) : vehicle.vehicle_photo} 
+                                        alt="Preview" 
+                                        style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '8px' }} 
+                                    />
+                                </div>
+                            )}
                         </div>
+                        <label className="btn btn-save" style={{ display: 'inline-block', cursor: 'pointer', marginTop: '10px', width: '100%', boxSizing: 'border-box' }}>
+                                📸 Seleccionar Imagen
+                                <input 
+                                    type="file" 
+                                    name="vehicle_photo" 
+                                    accept="image/*"
+                                    onChange={handleChange}
+                                    style={{ display: 'none' }}
+                                />
+                            </label>
                     </div>
                 </aside>
             </form>
