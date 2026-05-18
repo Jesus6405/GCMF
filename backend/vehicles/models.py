@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator #Para validar PDF
+from datetime import date, timedelta
 
 # Create your models here.
 class Vehicle(models.Model):
@@ -62,6 +63,50 @@ class Vehicle(models.Model):
     )
 
     is_active = models.BooleanField(default=True, verbose_name="¿Está Activo?") 
+
+    @property
+    def legal_status(self):
+        today = date.today()
+        docs = self.documents.all()
+        
+        status = 'VERDE'
+        for doc in docs:
+            if doc.date_end < today:
+                return 'ROJO'
+            elif today <= doc.date_end <= today + timedelta(days=15):
+                status = 'AMARILLO'
+        return status
+
+    @property
+    def maintenance_status(self):
+        if self.operational_status == self.OperationalStatus.UNDER_REVIEW:
+            return 'NARANJA'
+            
+        active_incidents = self.incidents.filter(report_status__in=['Pending', 'Under Review'])
+        if active_incidents.filter(urgency_level='Critical').exists():
+            return 'ROJO'
+            
+        active_preventive = [
+            m.preventivemaintenanceorder 
+            for m in self.maintenances.filter(status__in=['PLANNING', 'EXECUTION'], order_type='PREVENTIVE') 
+            if hasattr(m, 'preventivemaintenanceorder')
+        ]
+        
+        min_scheduled_km = None
+        for pm in active_preventive:
+            if min_scheduled_km is None or pm.scheduled_km < min_scheduled_km:
+                min_scheduled_km = pm.scheduled_km
+                
+        if min_scheduled_km is not None:
+            if self.current_km >= min_scheduled_km:
+                return 'ROJO'
+            elif 0 <= (min_scheduled_km - self.current_km) <= 500:
+                return 'AMARILLO'
+                
+        if active_incidents.filter(urgency_level='Moderate').exists():
+            return 'AMARILLO'
+            
+        return 'VERDE'
 
     def delete(self, *args, **kwargs):
         """

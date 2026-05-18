@@ -7,6 +7,7 @@ import { getAllVehicles } from '../api/vehicles.api';
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
 import '../index.css'; 
 import { Link } from 'react-router-dom';
+import { AlertBadge } from '../components/AlertBadge';
 
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
@@ -70,6 +71,8 @@ const Dashboard = () => {
   const totalVehicleKm = stats?.vehicles?.total_km || 0;
   const maintenanceTypeText = stats?.maintenance?.by_type ? stats.maintenance.by_type.map(item => `${item.order_type} (${item.count})`).join(', ') : 'N/A';
   const maintenanceStatusText = stats?.maintenance?.by_status ? stats.maintenance.by_status.map(item => `${item.status} (${item.count})`).join(', ') : 'N/A';
+  
+  const getVehicleFullData = (placa) => vehicles.find(v => v.placa === placa) || {};
 
   return (
     <div className="dashboard-layout">
@@ -205,19 +208,26 @@ const Dashboard = () => {
                <tr>
                  <th>Placa</th>
                  <th>Estado</th>
+                 <th>Estatus Legal</th>
+                 <th>Estatus Mecánico</th>
                  <th>TCO Act.</th> {/* <--- AQUÍ VA EL TCO INDIVIDUAL */}
                  <th>Acción</th>
                </tr>
              </thead>
              <tbody>
-               {vehiclesList.slice(0, 5).map(vehicle => (
+               {vehiclesList.slice(0, 5).map(vehicle => {
+                 const fullV = getVehicleFullData(vehicle.placa);
+                 return (
                  <tr key={vehicle.placa}>
                    <td>{vehicle.placa}</td>
                    <td><span className={`badge ${vehicle.operational_status === 'Operational' ? 'green' : vehicle.operational_status === 'In Workshop' ? 'yellow' : 'red'}`}>{vehicle.operational_status}</span></td>
+                   <td><AlertBadge type="legal" status={fullV.legal_status} /></td>
+                   <td><AlertBadge type="maintenance" status={fullV.maintenance_status} /></td>
                    <td>${vehicle.tco?.toFixed(2) || '0.00'}</td>
                    <td>👁️</td>
                  </tr>
-               ))}
+                 );
+               })}
              </tbody>
            </table>
         </div>

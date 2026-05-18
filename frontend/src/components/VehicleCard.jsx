@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { AlertBadge } from "./AlertBadge";
 
 export function VehicleCard({ vehicle, onDelete }) {
     const navigate = useNavigate();
@@ -25,6 +26,12 @@ export function VehicleCard({ vehicle, onDelete }) {
             <td>{vehicle.fuel_type}</td>
             <td>
                 <span className="status-badge">{vehicle.operational_status}</span>
+            </td>
+            <td>
+                <AlertBadge type="legal" status={vehicle.legal_status} />
+            </td>
+            <td>
+                <AlertBadge type="maintenance" status={vehicle.maintenance_status} />
             </td>
             <td>{vehicle.current_km} km</td>
             <td className="actions-cell">

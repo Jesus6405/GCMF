@@ -63,6 +63,8 @@ export function VehiclesList() {
                             <th>Año</th>
                             <th>Combustible</th>
                             <th>Estado</th>
+                            <th>Estatus Legal</th>
+                            <th>Estatus Mecánico</th>
                             <th>KM Actual</th>
                             <th>Acciones</th>
                         </tr>

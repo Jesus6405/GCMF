@@ -8,6 +8,9 @@ from .models import (
 )
 
 class VehicleSerializer(serializers.ModelSerializer):
+    legal_status = serializers.ReadOnlyField()
+    maintenance_status = serializers.ReadOnlyField()
+
     class Meta:
         model = Vehicle
         fields = '__all__'
