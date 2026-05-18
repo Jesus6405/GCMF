@@ -7,7 +7,7 @@ import {
     getMaintenanceOrder, 
     updateMaintenanceOrder 
 } from "../api/maintenanceOrders.api";
-import { getVehicle, updateVehicle } from "../api/vehicles.api";
+import { getVehicle, updateVehicle, patchVehicle } from "../api/vehicles.api";
 
 export function MaintenanceOrdersFormPage() {
     const { id } = useParams();
@@ -99,10 +99,7 @@ export function MaintenanceOrdersFormPage() {
 
             if (order.final_odometer) {
                 //Actualizamos Automaticamente el kilometraje del vehiculo asociado
-                const res = await getVehicle(order.vehicle);
-                const vehicleData = res.data;
-                vehicleData.current_km = order.final_odometer;
-                await updateVehicle(order.vehicle, vehicleData);
+                await patchVehicle(order.vehicle, { current_km: order.final_odometer });
             }
 
             navigate("/maintenanceOrders");
