@@ -8,4 +8,5 @@ export const getAllVehicles = () => API.get('/');
 export const getVehicle = (placa) => API.get(`/${placa}/`);
 export const createVehicle = (vehicleData) => API.post('/', vehicleData);
 export const updateVehicle = (placa, vehicle) => API.put(`/${placa}/`, vehicle);
+export const patchVehicle = (placa, data) => API.patch(`/${placa}/`, data);
 export const deleteVehicle = (placa) => API.delete(`/${placa}/`);

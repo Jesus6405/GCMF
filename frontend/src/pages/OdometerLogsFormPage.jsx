@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getOdometerLog, createOdometerLog, updateOdometerLog } from "../api/odometerLog.api";
-import { getVehicle, updateVehicle, getAllVehicles } from "../api/vehicles.api"; //[cite: 34, 35]
+import { getVehicle, updateVehicle, patchVehicle, getAllVehicles } from "../api/vehicles.api"; //[cite: 34, 35]
 
 const INITIAL_STATE = {
     km_reading: "",
@@ -50,17 +50,18 @@ export function OdometerLogsFormPage() {
                 await createOdometerLog(OdLog);
             }
             
-            const res = await getVehicle(OdLog.vehicle);
-            const vehicleData = res.data;
-            vehicleData.current_km = OdLog.km_reading;
-            await updateVehicle(OdLog.vehicle, vehicleData);
+            // Actualizamos únicamente el campo de kilometraje mediante PATCH
+            await patchVehicle(OdLog.vehicle, { current_km: OdLog.km_reading });
 
             navigate("/odometerLog");
         } catch (error) {
             console.error("Error de la API:", error.response?.data || error.message);
-            alert("No se pudo guardar el Log.");
+            const errorMsg = error.response?.data ? JSON.stringify(error.response.data) : error.message;
+            alert(`No se pudo guardar el Log. Detalles: ${errorMsg}`);
         }
     };
+
+    const selectedVehicle = vehicles.find(v => v.placa === OdLog.vehicle);
 
     return (
         <div className="form-page-container">
@@ -102,6 +103,11 @@ export function OdometerLogsFormPage() {
                                         </option>
                                     ))}
                                 </select>
+                                {selectedVehicle && (
+                                    <small style={{ color: '#4b5563', display: 'block', marginTop: '0.5rem', fontSize: '0.85rem' }}>
+                                        Kilometraje registrado en base de datos: <strong>{selectedVehicle.current_km} km</strong>
+                                    </small>
+                                )}
                             </div>
 
                             <div className="form-group">
