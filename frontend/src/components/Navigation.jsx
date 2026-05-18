@@ -5,7 +5,7 @@ import { NotificationDropdown } from "./NotificationDropdown";
 
 export function Navigation({ isOpen, closeMenu }) {
 
-    const { user } = useContext(AuthContext); // Para saber quién es el que está mirando
+    const { user, logout } = useContext(AuthContext); // Para saber quién es el que está mirando
 
     return (
         
@@ -101,6 +101,20 @@ export function Navigation({ isOpen, closeMenu }) {
                     </li>
                     </>
                 )}
+
+                {/* Botón de Cerrar Sesión */}
+                <li style={{ marginTop: 'auto', paddingTop: '1rem' }}>
+                    <button 
+                        onClick={() => {
+                            logout();
+                            closeMenu && closeMenu();
+                        }} 
+                        className="menu-link" 
+                        style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', color: '#dc2626', fontWeight: 'bold' }}
+                    >
+                        🚪 Cerrar Sesión
+                    </button>
+                </li>
             </ul>
         </aside>
     );

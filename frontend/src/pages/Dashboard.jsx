@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import AuthContext  from '../context/AuthContext';
+import AuthContext from '../context/AuthContext';
 import { getDashboardStats } from '../api/dashboard.api';
 import { getAllNotifications } from '../api/notifications.api';
 import { getAllVehicles } from '../api/vehicles.api';
 // Sugerencia: Instala 'recharts' para los gráficos (npm install recharts)
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
-import '../index.css'; 
+import '../index.css';
 import { Link } from 'react-router-dom';
 import { AlertBadge } from '../components/AlertBadge';
 
@@ -40,6 +40,39 @@ const Dashboard = () => {
 
   if (loading) return <div className="loader">Cargando Panel...</div>;
 
+  // Dashboard simplificado para mecánicos, conductores y otros roles no gerenciales
+  if (user?.rol !== 'GERENTE_FLOTA' && user?.rol !== 'ADMINISTRADOR_OPERATIVO') {
+    return (
+      <div className="dashboard-layout" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
+        <div style={{ textAlign: 'center', maxWidth: '600px', padding: '3rem', backgroundColor: '#fff', borderRadius: '16px', boxShadow: '0 10px 25px rgba(0,0,0,0.05)' }}>
+          <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#1f2937' }}>¡Bienvenido a GCMF!</h1>
+          <p style={{ fontSize: '1.2rem', color: '#6b7280', marginBottom: '2.5rem' }}>
+            Hola. Selecciona una acción rápida para comenzar tu jornada.
+          </p>
+
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            {user?.rol === 'MECANICO' && (
+              <Link to="/maintenanceOrders" className="btn-link" style={{ padding: '1rem 2rem', fontSize: '1.1rem', backgroundColor: '#F59E0B', color: '#fff', borderRadius: '8px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'transform 0.2s' }}>
+                🔧 Ir a Órdenes de Mantenimiento
+              </Link>
+            )}
+
+            {user?.rol === 'CONDUCTOR' && (
+              <>
+                <Link to="/odometerLog" className="btn-link" style={{ padding: '1rem 2rem', fontSize: '1.1rem', backgroundColor: '#10B981', color: '#fff', borderRadius: '8px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'transform 0.2s' }}>
+                  🚗 Registrar Kilometraje
+                </Link>
+                <Link to="/incidents-create" className="btn-link" style={{ padding: '1rem 2rem', fontSize: '1.1rem', backgroundColor: '#EF4444', color: '#fff', borderRadius: '8px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'transform 0.2s' }}>
+                  ⚠️ Reportar Incidente
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Datos para el gráfico circular (Donut) basados en tu API
   const fleetStatusData = stats?.vehicles?.by_status?.map(v => ({
     name: v.operational_status,
@@ -71,7 +104,7 @@ const Dashboard = () => {
   const totalVehicleKm = stats?.vehicles?.total_km || 0;
   const maintenanceTypeText = stats?.maintenance?.by_type ? stats.maintenance.by_type.map(item => `${item.order_type} (${item.count})`).join(', ') : 'N/A';
   const maintenanceStatusText = stats?.maintenance?.by_status ? stats.maintenance.by_status.map(item => `${item.status} (${item.count})`).join(', ') : 'N/A';
-  
+
   const getVehicleFullData = (placa) => vehicles.find(v => v.placa === placa) || {};
 
   return (
@@ -83,12 +116,12 @@ const Dashboard = () => {
           <span className="date-subtitle">Lunes, 4 de Mayo de 2026</span>
         </div>
         <div className="header-actions">
-           <Link to="/vehicles-create" className="btn-link" style={{ textDecoration: 'none' }}>
-              Nuevo vehículo &rarr;
-            </Link>
-           <Link to="/maintenanceOrders-create" className="btn-link" style={{ textDecoration: 'none' }}>
-              Nueva OM &rarr;
-            </Link>
+          <Link to="/vehicles-create" className="btn-link" style={{ textDecoration: 'none' }}>
+            Nuevo vehículo &rarr;
+          </Link>
+          <Link to="/maintenanceOrders-create" className="btn-link" style={{ textDecoration: 'none' }}>
+            Nueva OM &rarr;
+          </Link>
         </div>
       </header>
 
@@ -188,48 +221,48 @@ const Dashboard = () => {
       {/* TABLAS Y ALERTAS (FILA 3) */}
       <section className="tables-grid">
         <div className="alerts-section">
-           <h3>Alertas Activas</h3>
-           {notifications.slice(0, 5).map(notification => (
-             <div key={notification.id} className={`alert-item ${notification.notif_type === 'LEGAL' ? 'danger' : 'warning'}`}>
-               {notification.message}
-             </div>
-           ))}
+          <h3>Alertas Activas</h3>
+          {notifications.slice(0, 5).map(notification => (
+            <div key={notification.id} className={`alert-item ${notification.notif_type === 'LEGAL' ? 'danger' : 'warning'}`}>
+              {notification.message}
+            </div>
+          ))}
         </div>
 
         <div className="fleet-table-section">
-           <div className="table-header-flex">
-              <h3>Estado de la Flota</h3>
-              <Link to="/vehicles" className="btn-link" style={{ textDecoration: 'none' }}>
+          <div className="table-header-flex">
+            <h3>Estado de la Flota</h3>
+            <Link to="/vehicles" className="btn-link" style={{ textDecoration: 'none' }}>
               Ver inventario completo &rarr;
-              </Link>
-           </div>
-           <table className="modern-table">
-             <thead>
-               <tr>
-                 <th>Placa</th>
-                 <th>Estado</th>
-                 <th>Estatus Legal</th>
-                 <th>Estatus Mecánico</th>
-                 <th>TCO Act.</th> {/* <--- AQUÍ VA EL TCO INDIVIDUAL */}
-                 <th>Acción</th>
-               </tr>
-             </thead>
-             <tbody>
-               {vehiclesList.slice(0, 5).map(vehicle => {
-                 const fullV = getVehicleFullData(vehicle.placa);
-                 return (
-                 <tr key={vehicle.placa}>
-                   <td>{vehicle.placa}</td>
-                   <td><span className={`badge ${vehicle.operational_status === 'Operational' ? 'green' : vehicle.operational_status === 'In Workshop' ? 'yellow' : 'red'}`}>{vehicle.operational_status}</span></td>
-                   <td><AlertBadge type="legal" status={fullV.legal_status} /></td>
-                   <td><AlertBadge type="maintenance" status={fullV.maintenance_status} /></td>
-                   <td>${vehicle.tco?.toFixed(2) || '0.00'}</td>
-                   <td>👁️</td>
-                 </tr>
-                 );
-               })}
-             </tbody>
-           </table>
+            </Link>
+          </div>
+          <table className="modern-table">
+            <thead>
+              <tr>
+                <th>Placa</th>
+                <th>Estado</th>
+                <th>Estatus Legal</th>
+                <th>Estatus Mecánico</th>
+                <th>TCO Act.</th> {/* <--- AQUÍ VA EL TCO INDIVIDUAL */}
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {vehiclesList.slice(0, 5).map(vehicle => {
+                const fullV = getVehicleFullData(vehicle.placa);
+                return (
+                  <tr key={vehicle.placa}>
+                    <td>{vehicle.placa}</td>
+                    <td><span className={`badge ${vehicle.operational_status === 'Operational' ? 'green' : vehicle.operational_status === 'In Workshop' ? 'yellow' : 'red'}`}>{vehicle.operational_status}</span></td>
+                    <td><AlertBadge type="legal" status={fullV.legal_status} /></td>
+                    <td><AlertBadge type="maintenance" status={fullV.maintenance_status} /></td>
+                    <td>${vehicle.tco?.toFixed(2) || '0.00'}</td>
+                    <td>👁️</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </section>
     </div>
